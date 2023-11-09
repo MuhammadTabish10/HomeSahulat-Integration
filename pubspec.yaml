@@ -41,9 +41,14 @@ dependencies:
   get: ^4.6.5
   date_picker_timeline: ^1.2.5
   geolocator: ^9.0.2
-  google_maps_flutter: ^2.3.1
   country_picker: ^2.0.20
   url_launcher: ^6.1.12
+  firebase_core: ^2.21.0
+  firebase_auth: ^4.12.1
+  progress_dialog_null_safe: ^1.0.7
+  device_info_plus: ^3.2.3
+  
+  
 
 dev_dependencies:
   flutter_test:

@@ -1,7 +1,12 @@
-import 'dart:convert';
+// ignore_for_file: use_build_context_synchronously, avoid_print
 
+import 'dart:convert';
+import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
 import 'package:flutter/material.dart';
 import 'package:homesahulat_fyp/constants/routes.dart';
+import 'package:homesahulat_fyp/constants/api_end_points.dart';
+import 'package:homesahulat_fyp/widget/custom_toast.dart';
+// import 'package:homesahulat_fyp/service/device_id_provider.dart';
 import 'package:http/http.dart' as http;
 
 class RegisterView extends StatefulWidget {
@@ -11,54 +16,35 @@ class RegisterView extends StatefulWidget {
   State<RegisterView> createState() => _RegisterViewState();
 }
 
-class MyAlertDialog extends StatelessWidget {
-  final String title;
-  final String content;
-  final List<Widget> actions;
-
-  const MyAlertDialog({
-    required this.title,
-    required this.content,
-    this.actions = const [],
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(
-        title,
-        style: Theme.of(context).textTheme.titleLarge,
-      ),
-      actions: actions,
-      content: Text(
-        content,
-        style: Theme.of(context).textTheme.bodyLarge,
-      ),
-    );
-  }
-}
-
 class _RegisterViewState extends State<RegisterView> {
+  late final TextEditingController _name;
   late final TextEditingController _phoneNumber;
   late final TextEditingController _password;
   bool _obscureText = true;
+  String deviceId = '';
+  late ProgressDialog _progressDialog;
 
   @override
   void initState() {
+    _name = TextEditingController();
     _phoneNumber = TextEditingController();
     _password = TextEditingController();
+    _progressDialog = ProgressDialog(context);
     super.initState();
   }
 
   @override
   void dispose() {
+    _name.dispose();
     _phoneNumber.dispose();
     _password.dispose();
     super.dispose();
   }
 
-  Future<void> registerUser(String phone, String password) async {
-    const apiUrl = 'http://localhost:8080/api/signup';
+  Future<void> registerUser(String name, String phone, String password) async {
+    await _progressDialog.show();
+    String apiUrl = signUp;
+    // deviceId = (await DeviceIdProvider().getId())!;
     try {
       final response = await http.post(
         Uri.parse(apiUrl),
@@ -66,21 +52,37 @@ class _RegisterViewState extends State<RegisterView> {
           'Content-Type': 'application/json',
         },
         body: json.encode({
+          'name': name,
           'phone': phone,
           'password': password,
+          'deviceId': "deviceId"
         }),
       );
 
       if (response.statusCode == 200) {
-        // Registration successful, handle the response as needed
+        // Registration successful, extract user ID from the response
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        String userId =
+            responseData['id']; // Adjust the key according to your API response
+
+        _progressDialog.hide();
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          otpVerificationRoute,
+          (route) => false,
+          arguments: userId,
+        );
+
         print('Registration successful');
       } else {
         // Registration failed, handle the error
+        _progressDialog.hide();
+        CustomToast.showAlert(context, 'Registration Failed');
         print('Registration failed: ${response.statusCode}');
         print('Response Body: ${response.body}');
       }
     } catch (error) {
       // Handle network or API errors
+      _progressDialog.hide();
       print('Error: $error');
     }
   }
@@ -92,11 +94,30 @@ class _RegisterViewState extends State<RegisterView> {
         children: [
           const SizedBox(height: 50),
           Image.asset(
-            'assets/images/logo.png',
-            width: 100,
-            height: 100,
+            'lib/assets/images/logo.png',
+            width: 200,
+            height: 200,
           ),
           const SizedBox(height: 50),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.grey[200],
+              borderRadius: BorderRadius.circular(5.0),
+            ),
+            margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: TextField(
+              controller: _name,
+              autocorrect: false,
+              keyboardType:
+                  TextInputType.name, // Set input type to phone number
+              decoration: const InputDecoration(
+                hintText: 'Enter your name',
+                border: InputBorder.none,
+                suffixIcon: Icon(Icons.account_circle),
+              ),
+            ),
+          ),
           Container(
             decoration: BoxDecoration(
               color: Colors.grey[200],
@@ -156,9 +177,10 @@ class _RegisterViewState extends State<RegisterView> {
                 // Get the phone number and password from text controllers
                 String phone = _phoneNumber.text;
                 String password = _password.text;
+                String name = _name.text;
 
                 // Call the registerUser function with phone and password
-                registerUser(phone, password);
+                registerUser(name, phone, password);
               },
               child: const Text(
                 'Register',

@@ -34,9 +34,9 @@ class _LoginViewState extends State<LoginView> {
         children: [
           const SizedBox(height: 50),
           Image.asset(
-            'assets/images/logo.png',
-            width: 100,
-            height: 100,
+            'lib/assets/images/logo.png',
+            width: 200,
+            height: 200,
           ),
           const SizedBox(height: 50),
           Container(

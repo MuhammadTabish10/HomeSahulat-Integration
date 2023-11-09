@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "619702604255",
+    "project_id": "homesahulat-19b31",
+    "storage_bucket": "homesahulat-19b31.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:619702604255:android:17b5709a7a27004a55746a",
+        "android_client_info": {
+          "package_name": "com.TBZ.homesahulat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjWejiMOhHdNAV9cuzh9MICSYdY1MMRd4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:619702604255:android:41c4140a97a7868b55746a",
+        "android_client_info": {
+          "package_name": "com.example.homesahulat_fyp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjWejiMOhHdNAV9cuzh9MICSYdY1MMRd4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

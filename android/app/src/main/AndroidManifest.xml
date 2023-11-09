@@ -1,4 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:label="homesahulat_fyp"
         android:name="${applicationName}"
@@ -17,7 +19,6 @@
                  to determine the Window background behind the Flutter UI. -->
                  <!-- Required to fetch data from the internet. -->
             
-            <uses-permission android:name="android.permission.INTERNET" />
 
             <meta-data
               android:name="io.flutter.embedding.android.NormalTheme"

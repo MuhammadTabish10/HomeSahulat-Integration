@@ -30,7 +30,8 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+        body: SingleChildScrollView(
+      child: Column(
         children: [
           const SizedBox(height: 50),
           Image.asset(
@@ -172,6 +173,6 @@ class _LoginViewState extends State<LoginView> {
               child: const Text('Not Registered yet? Register here!'))
         ],
       ),
-    );
+    ));
   }
 }

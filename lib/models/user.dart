@@ -11,7 +11,7 @@ class User {
   // final String lastName;
   final String phone;
   // final String profilePictureUrl;
-  final String deviceId;
+  // final String deviceId;
   // final int otp;
   // final bool otpFlag;
 
@@ -23,7 +23,7 @@ class User {
     // required this.lastName,
     required this.phone,
     // required this.profilePictureUrl,
-    required this.deviceId,
+    // required this.deviceId,
     // required this.otp,
     // required this.otpFlag
   });
@@ -37,7 +37,7 @@ class User {
       // lastName: json['lastName'],
       phone: json['phone'],
       // profilePictureUrl: json['profilePictureUrl'],
-      deviceId: json['deviceId'],
+      // deviceId: json['deviceId'],
       // otp: json['otp'],
       // otpFlag: json['otpFlag']
     );
@@ -52,7 +52,7 @@ class User {
       // 'lastName': lastName,
       'phone': phone,
       // 'profilePictureUrl': profilePictureUrl,
-      'deviceId': deviceId,
+      // 'deviceId': deviceId,
       // 'otp': otp,
       // 'otpFlag': otpFlag
     };

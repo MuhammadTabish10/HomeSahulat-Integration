@@ -55,15 +55,14 @@ class _RegisterViewState extends State<RegisterView> {
           'name': name,
           'phone': phone,
           'password': password,
-          'deviceId': "deviceId"
+          // 'deviceId': "deviceId"
         }),
       );
 
       if (response.statusCode == 200) {
         // Registration successful, extract user ID from the response
         final Map<String, dynamic> responseData = json.decode(response.body);
-        String userId =
-            responseData['id']; // Adjust the key according to your API response
+        String userId = responseData['id'].toString();
 
         _progressDialog.hide();
         Navigator.of(context).pushNamedAndRemoveUntil(
@@ -90,7 +89,8 @@ class _RegisterViewState extends State<RegisterView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+        body: SingleChildScrollView(
+      child: Column(
         children: [
           const SizedBox(height: 50),
           Image.asset(
@@ -200,6 +200,6 @@ class _RegisterViewState extends State<RegisterView> {
               child: const Text('Already Registered? Login here!')),
         ],
       ),
-    );
+    ));
   }
 }

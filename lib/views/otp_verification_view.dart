@@ -28,26 +28,39 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
   }
 
   Future<bool> _verifyOtp(String id, String otp) async {
-    final response =
-        await http.get(Uri.parse(getOtpVerificationUrl(id, otp)));
+    try {
+      final response =
+          await http.get(Uri.parse(getOtpVerificationUrl(id, otp)));
+
+      if (response.statusCode == 200) {
+        return response.body.toLowerCase() == 'true';
+      } else {
+        // Handle the API error according to your requirements
+        throw Exception(
+            'Failed to verify OTP. Status code: ${response.statusCode}');
+      }
+    } catch (error) {
+      // Handle network or other errors
+      print('Error during OTP verification: $error');
+      throw Exception('Failed to verify OTP. Error: $error');
+    }
+  }
+
+Future<bool> _resendOtp(String id) async {
+  try {
+    final response = await http.post(Uri.parse(resendOtpUrl(id)));
+    print('Resend OTP Response Code: ${response.statusCode}');
+    print('Resend OTP Response Body: ${response.body}');
 
     if (response.statusCode == 200) {
       return response.body.toLowerCase() == 'true';
     } else {
-      throw Exception('Failed to verify OTP');
+      throw Exception('Failed to resend OTP. Status code: ${response.statusCode}');
     }
+  } catch (error) {
+    throw Exception('Failed to resend OTP. Error: $error');
   }
-
-   Future<bool> _resendOtp(String id) async {
-    final response =
-        await http.get(Uri.parse(resendOtpUrl(id)));
-
-    if (response.statusCode == 200) {
-      return response.body.toLowerCase() == 'true';
-    } else {
-      throw Exception('Failed to verify OTP');
-    }
-  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -86,6 +99,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                 try {
                   String otp = _otpController.text;
                   bool isOtpVerified = await _verifyOtp(userId, otp);
+
                   if (isOtpVerified) {
                     // OTP verification successful, navigate to the next screen
                     Navigator.of(context).pushReplacementNamed(homeRoute);
@@ -107,8 +121,8 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
             ),
             const SizedBox(height: 20),
             TextButton(
-              onPressed: () {
-                // TODO: Resend OTP functionality
+              onPressed: () async {
+                await _resendOtp(userId);
               },
               child: const Text('Resend OTP'),
             ),

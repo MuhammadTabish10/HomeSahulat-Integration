@@ -43,7 +43,7 @@ class _RegisterViewState extends State<RegisterView> {
 
   Future<void> registerUser(String name, String phone, String password) async {
     await _progressDialog.show();
-    String apiUrl = signUp;
+    String apiUrl = signUpUrl;
     // deviceId = (await DeviceIdProvider().getId())!;
     try {
       final response = await http.post(

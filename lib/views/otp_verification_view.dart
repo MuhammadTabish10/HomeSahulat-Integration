@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, avoid_print
 
 import 'package:flutter/material.dart';
 import 'package:homesahulat_fyp/constants/api_end_points.dart';
@@ -102,7 +102,7 @@ Future<bool> _resendOtp(String id) async {
 
                   if (isOtpVerified) {
                     // OTP verification successful, navigate to the next screen
-                    Navigator.of(context).pushReplacementNamed(homeRoute);
+                    Navigator.of(context).pushReplacementNamed(loginRoute);
                   } else {
                     // OTP verification failed, show an error message
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(

@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:homesahulat_fyp/constants/routes.dart';
+import 'package:homesahulat_fyp/models/service_provider.dart';
+import 'dart:convert';
+import 'package:homesahulat_fyp/constants/api_end_points.dart';
+import 'package:http/http.dart' as http;
 
 class ServiceProviderView extends StatefulWidget {
   const ServiceProviderView({Key? key}) : super(key: key);
@@ -9,6 +13,85 @@ class ServiceProviderView extends StatefulWidget {
 }
 
 class _ServiceProviderViewState extends State<ServiceProviderView> {
+  late List<ServiceProvider> serviceProviderList = [];
+  late String service;
+  late String token;
+  late String serviceName;
+  bool isMounted = false;
+
+  @override
+  void initState() {
+    super.initState();
+    isMounted = true;
+  }
+
+  @override
+  void dispose() {
+    isMounted = false;
+    super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    loadData();
+  }
+
+  Future<void> loadData() async {
+    // Extract arguments here
+    final Map<String, dynamic>? args =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+
+    if (args != null) {
+      token = args['token'] ?? '';
+      serviceName = args['serviceName'] ?? '';
+    } else {
+      // Handle the case where arguments are null
+      token = '';
+      serviceName = '';
+    }
+
+    try {
+      final providers = await getAllServiceProviders(serviceName, token);
+      if (isMounted) {
+        setState(() {
+          serviceProviderList = providers;
+        });
+      }
+    } catch (e) {
+      print('Error fetching data: $e');
+    }
+  }
+
+  Future<List<ServiceProvider>> getAllServiceProviders(
+      String service, String token) async {
+    String apiUrl = getAllServiceProvidersByServiceUrl(service);
+    final Uri uri = Uri.parse(apiUrl);
+
+    try {
+      final response = await http.get(
+        uri,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        List<ServiceProvider> providers =
+            data.map((json) => ServiceProvider.fromJson(json)).toList();
+        return providers;
+      } else {
+        print('Failed to load service providers: ${response.statusCode}');
+        return [];
+      }
+    } catch (e) {
+      print('Error fetching data: $e');
+      return [];
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,9 +121,9 @@ class _ServiceProviderViewState extends State<ServiceProviderView> {
           ),
           Expanded(
             child: ListView.builder(
-              itemCount:
-                  10, // Number of ServiceProviderView widgets in the list
+              itemCount: serviceProviderList.length,
               itemBuilder: (context, index) {
+                ServiceProvider provider = serviceProviderList[index];
                 return Container(
                   decoration: BoxDecoration(
                     color: const Color(0xFFB2DFDB),
@@ -55,37 +138,42 @@ class _ServiceProviderViewState extends State<ServiceProviderView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Left: Profile Picture
-                      const CircleAvatar(
+                      CircleAvatar(
                         radius: 64.0,
-                        backgroundImage: AssetImage(''),
+                        backgroundImage: NetworkImage(
+                          provider.user.profilePictureUrl ?? '',
+                        ),
                       ),
                       const SizedBox(width: 16.0),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              'Jamil Anwar',
-                              style: TextStyle(
+                            Text(
+                              provider.user.name,
+                              style: const TextStyle(
                                 fontSize: 18.0,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                             const SizedBox(height: 8.0),
-                            const Text(
-                              'Electrician',
-                              style: TextStyle(fontSize: 16.0),
+                            Text(
+                              provider.services.name,
+                              style: const TextStyle(fontSize: 16.0),
                             ),
                             const SizedBox(height: 8.0),
-                            const Text(
-                              '37 Services | 4.7 ratings',
-                              style: TextStyle(fontSize: 14.0),
+                            Text(
+                              '${provider.totalExperience} Services | ${provider.totalRating} ratings',
+                              style: const TextStyle(fontSize: 14.0),
                             ),
                             const SizedBox(height: 16.0),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: ElevatedButton(
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: 16.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  ElevatedButton(
                                     onPressed: () {
                                       // Handle book button press
                                       Navigator.pushNamed(
@@ -99,10 +187,7 @@ class _ServiceProviderViewState extends State<ServiceProviderView> {
                                     ),
                                     child: const Text('Book'),
                                   ),
-                                ),
-                                const SizedBox(width: 16.0),
-                                Expanded(
-                                  child: ElevatedButton(
+                                  ElevatedButton(
                                     onPressed: () {
                                       // Handle view profile button press
                                       Navigator.pushNamed(
@@ -120,9 +205,9 @@ class _ServiceProviderViewState extends State<ServiceProviderView> {
                                       style: TextStyle(color: Colors.white),
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
+                                ],
+                              ),
+                            )
                           ],
                         ),
                       ),

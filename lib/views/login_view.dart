@@ -2,8 +2,8 @@
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:homesahulat_fyp/constants/routes.dart';
 import 'package:http/http.dart' as http;
+import 'package:homesahulat_fyp/constants/routes.dart';
 import 'package:homesahulat_fyp/constants/api_end_points.dart';
 import 'package:homesahulat_fyp/widget/custom_toast.dart';
 
@@ -40,10 +40,9 @@ class _LoginViewState extends State<LoginView> {
       _isLoading = true; // Set loading to true when login starts
     });
 
-    String apiUrl = loginUrl;
     try {
       final response = await http.post(
-        Uri.parse(apiUrl),
+        Uri.parse(loginUrl),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -61,7 +60,7 @@ class _LoginViewState extends State<LoginView> {
         Navigator.of(context).pushNamedAndRemoveUntil(
           homeRoute,
           (route) => false,
-          arguments: token,
+          arguments: {'token': token},
         );
 
         print('Login successful');
@@ -107,6 +106,7 @@ class _LoginViewState extends State<LoginView> {
               'lib/assets/images/logo.png',
               width: 200,
               height: 200,
+              fit: BoxFit.contain, // Use BoxFit to handle the image size
             ),
             const SizedBox(height: 50),
             Container(
@@ -119,9 +119,7 @@ class _LoginViewState extends State<LoginView> {
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: TextField(
                 controller: _phoneNumber,
-                autocorrect: false,
-                keyboardType:
-                    TextInputType.phone, // Set input type to phone number
+                keyboardType: TextInputType.phone,
                 decoration: const InputDecoration(
                   hintText: 'Enter your phone number',
                   border: InputBorder.none,
@@ -203,11 +201,12 @@ class _LoginViewState extends State<LoginView> {
               ),
             ),
             TextButton(
-                onPressed: () {
-                  Navigator.of(context)
-                      .pushNamedAndRemoveUntil(registerRoute, (route) => false);
-                },
-                child: const Text('Not Registered yet? Register here!'))
+              onPressed: () {
+                Navigator.of(context)
+                    .pushNamedAndRemoveUntil(registerRoute, (route) => false);
+              },
+              child: const Text('Not Registered yet? Register here!'),
+            ),
           ],
         ),
       ),

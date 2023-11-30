@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:homesahulat_fyp/models/location.dart';
+
 User userJson(String str) => User.fromJson(json.decode(str));
 String userToJson(User data) => json.encode(data.toJson());
 
@@ -14,6 +16,7 @@ class User {
   final String? deviceId;
   final String? otp;
   final bool? otpFlag;
+  final Location? location;
 
   User({
     required this.name,
@@ -26,20 +29,24 @@ class User {
     this.deviceId,
     this.otp,
     this.otpFlag,
+    this.location,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       name: json['name'],
       password: json['password'],
-       email: json['email'],
+      email: json['email'],
       firstName: json['firstName'],
       lastName: json['lastName'],
       phone: json['phone'],
       profilePictureUrl: json['profilePictureUrl'],
       deviceId: json['deviceId'],
       otp: json['otp'],
-      otpFlag: json['otpFlag']
+      otpFlag: json['otpFlag'],
+      location: json['location'] != null
+          ? Location.fromJson(json['location'] as Map<String, dynamic>)
+          : null,
     );
   }
 
@@ -54,7 +61,8 @@ class User {
       'profilePictureUrl': profilePictureUrl,
       'deviceId': deviceId,
       'otp': otp,
-      'otpFlag': otpFlag
+      'otpFlag': otpFlag,
+      'location': location?.toJson(),
     };
   }
 }

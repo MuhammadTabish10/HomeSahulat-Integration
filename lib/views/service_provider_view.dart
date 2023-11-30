@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:homesahulat_fyp/constants/routes.dart';
 import 'package:homesahulat_fyp/models/service_provider.dart';
@@ -84,6 +86,7 @@ class _ServiceProviderViewState extends State<ServiceProviderView> {
         return providers;
       } else {
         print('Failed to load service providers: ${response.statusCode}');
+        print(response.body);
         return [];
       }
     } catch (e) {
@@ -168,7 +171,8 @@ class _ServiceProviderViewState extends State<ServiceProviderView> {
                             ),
                             const SizedBox(height: 16.0),
                             Container(
-                              padding: EdgeInsets.symmetric(horizontal: 16.0),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16.0),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,

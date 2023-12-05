@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:homesahulat_fyp/models/location.dart';
+
 
 Widget buildProfileItem(String label, String value) {
   return Column(
@@ -19,6 +21,19 @@ Widget buildProfileItem(String label, String value) {
         ),
       ),
       const Divider(),
+    ],
+  );
+}
+
+Widget buildLocationInfo(Location location) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      buildProfileItem('Address', location.address),
+      buildProfileItem('City', location.city),
+      buildProfileItem('State', location.state),
+      buildProfileItem('Postal Code', location.postalCode.toString()),
+      buildProfileItem('Country', location.country),
     ],
   );
 }

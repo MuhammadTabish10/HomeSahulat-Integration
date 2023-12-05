@@ -9,6 +9,7 @@ import 'package:homesahulat_fyp/widget/build_profile_item.dart';
 import 'dart:convert';
 import 'package:homesahulat_fyp/constants/api_end_points.dart';
 import 'package:http/http.dart' as http;
+import 'package:homesahulat_fyp/models/location.dart';
 
 class UserProfileView extends StatefulWidget {
   const UserProfileView({Key? key}) : super(key: key);
@@ -123,7 +124,19 @@ class _UserProfileViewState extends State<UserProfileView> {
           buildProfileItem('First Name', user.firstName ?? ''),
           buildProfileItem('Last Name', user.lastName ?? ''),
           buildProfileItem('Phone', user.phone),
-          // Add more profile items as needed
+          buildLocationInfo(user.location ??
+              Location(
+                id: 0,
+                name: '',
+                address: '',
+                city: '',
+                state: '',
+                postalCode: 0,
+                country: '',
+                latitude: 0.0,
+                longitude: 0.0,
+                status: false,
+              )),
         ],
       ),
     );

@@ -180,8 +180,7 @@ class _ServiceProviderViewState extends State<ServiceProviderView> {
                                   ElevatedButton(
                                     onPressed: () {
                                       // Handle book button press
-                                      Navigator.pushNamed(
-                                          context, bookingRoute);
+                                      navigateToBookingView(provider, token);
                                     },
                                     style: ElevatedButton.styleFrom(
                                       shape: RoundedRectangleBorder(
@@ -223,6 +222,13 @@ class _ServiceProviderViewState extends State<ServiceProviderView> {
           ),
         ],
       ),
+    );
+  }
+
+  void navigateToBookingView(ServiceProvider serviceProvider, String token) {
+    Navigator.of(context).pushNamed(
+      bookingRoute,
+      arguments: {'token': token, 'serviceProvider': serviceProvider},
     );
   }
 }

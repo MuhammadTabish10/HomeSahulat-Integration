@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, depend_on_referenced_packages
+// ignore_for_file: avoid_print, depend_on_referenced_packages, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import 'package:homesahulat_fyp/models/service_provider.dart';
@@ -111,9 +111,6 @@ class _BookingViewState extends State<BookingView> {
     setState(() {
       _isLoading = true; // Set loading to true when login starts
     });
-    print('Formatted Date: ${DateFormat('yyyy-MM-dd').format(date)}');
-    print('Formatted Time: ${DateFormat('HH:mm:ss').format(DateTime(2023, 1, 1, time.hour, time.minute))}');
-
     try {
       final response = await http.post(
         Uri.parse(bookUrl),
@@ -122,26 +119,19 @@ class _BookingViewState extends State<BookingView> {
           'Authorization': 'Bearer $token',
         },
         body: json.encode({
-          'appointmentDate': DateFormat('yyyy-MM-dd')
-              .format(date), // Convert DateTime to string
-          'appointmentTime': DateFormat('HH:mm:ss').format(DateTime(
-              2023,
-              1,
-              1,
-              time.hour,
-              time.minute)), // Assuming TimeOfDay has a suitable conversion method
-          'user': user.toJson(), // Assuming User has a toJson method
-          'serviceProvider': serviceProvider.toJson()
+          'appointmentDate': DateFormat('yyyy-MM-dd').format(date),
+          'appointmentTime': DateFormat('HH:mm:ss').format(DateTime(2023, 1, 1, time.hour, time.minute)),
+          'user': {'id': user.id},
+          'serviceProvider': {'id': serviceProvider.id},
         }),
       );
 
       if (response.statusCode == 200) {
         // Login successful, extract user token from the response
-        final Map<String, dynamic> responseData = json.decode(response.body);
         Navigator.of(context).pushNamedAndRemoveUntil(
           bookingConfirmedRoute,
           (route) => false,
-          arguments: {'token': token},
+          arguments: {'token': token,'serviceProvider':serviceProvider},
         );
 
         print('Booking successful');
@@ -354,72 +344,6 @@ class _BookingViewState extends State<BookingView> {
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class ScheduleOptionCard extends StatelessWidget {
-  final String option;
-  final bool isSelected;
-  final VoidCallback onSelect;
-
-  const ScheduleOptionCard({
-    Key? key,
-    required this.option,
-    required this.isSelected,
-    required this.onSelect,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      color: isSelected ? Colors.blue : null,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      child: ListTile(
-        title: Text(
-          option,
-          style: TextStyle(
-            color: isSelected ? Colors.white : Colors.black,
-          ),
-        ),
-        tileColor: isSelected ? const Color.fromARGB(255, 64, 173, 162) : null,
-        onTap: onSelect,
-      ),
-    );
-  }
-}
-
-class TimeSlotCard extends StatelessWidget {
-  final String timeSlot;
-  final bool isSelected;
-  final VoidCallback onSelect;
-
-  const TimeSlotCard({
-    Key? key,
-    required this.timeSlot,
-    required this.isSelected,
-    required this.onSelect,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      color: isSelected ? Colors.blue : null,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      child: ListTile(
-        title: Text(
-          timeSlot,
-          style: TextStyle(
-            color: isSelected ? Colors.white : Colors.black,
-          ),
-        ),
-        tileColor: isSelected ? const Color.fromARGB(255, 64, 173, 162) : null,
-        onTap: onSelect,
       ),
     );
   }

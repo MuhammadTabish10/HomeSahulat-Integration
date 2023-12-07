@@ -2,6 +2,7 @@
 import 'package:homesahulat_fyp/models/user.dart';
 import 'package:homesahulat_fyp/models/services.dart';
 import 'package:homesahulat_fyp/models/attachment.dart';
+import 'package:intl/intl.dart';
 import 'dart:convert';
 
 ServiceProvider serviceProviderJson(String str) =>
@@ -61,9 +62,10 @@ factory ServiceProvider.fromJson(Map<String, dynamic> json) {
 
 
   Map<String, dynamic> toJson() {
+  final formatter = DateFormat('yyyy-MM-dd HH:mm:ss');
   return {
     'id': id,
-    'createdAt': createdAt.toIso8601String(),
+    'createdAt': formatter.format(createdAt.toUtc()),
     'description': description,
     'hourlyPrice': hourlyPrice,
     'totalExperience': totalExperience,

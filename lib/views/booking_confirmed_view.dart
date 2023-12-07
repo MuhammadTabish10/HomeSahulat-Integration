@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../constants/routes.dart';
+import 'package:homesahulat_fyp/models/service_provider.dart';
+import 'package:homesahulat_fyp/constants/api_end_points.dart';
 
 class BookingConfirmedView extends StatefulWidget {
   const BookingConfirmedView({Key? key}) : super(key: key);
@@ -9,6 +11,43 @@ class BookingConfirmedView extends StatefulWidget {
 }
 
 class _BookingConfirmedViewState extends State<BookingConfirmedView> {
+  late ServiceProvider serviceProvider;
+  late String token;
+  bool isMounted = false;
+
+  @override
+  void initState() {
+    super.initState();
+    isMounted = true;
+  }
+
+  @override
+  void dispose() {
+    isMounted = false;
+    super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    loadData();
+  }
+
+  Future<void> loadData() async {
+    // Extract arguments here
+    final Map<String, dynamic>? args =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+
+    if (args != null) {
+      token = args['token'] ?? '';
+      serviceProvider = args['serviceProvider'] ?? '';
+    } else {
+      // Handle the case where arguments are null
+      token = '';
+      serviceProvider = {} as ServiceProvider;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,15 +76,16 @@ class _BookingConfirmedViewState extends State<BookingConfirmedView> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                const Text(
-                  'Jamil Anwar',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                Text(
+                  serviceProvider.user.name,
+                  style: const TextStyle(
+                      fontSize: 24, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 16),
-                const Text(
-                  'You have successfully booked Jamil Anwar to fix your problem.\nGet in touch with Jamil for further details.',
+                Text(
+                  'You have successfully booked ${serviceProvider.user.name} to fix your problem.\nGet in touch with ${serviceProvider.user.name} for further details.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 18),
+                  style: const TextStyle(fontSize: 18),
                 ),
                 const SizedBox(height: 32),
                 Row(

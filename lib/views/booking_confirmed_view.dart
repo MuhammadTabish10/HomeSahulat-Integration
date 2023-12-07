@@ -55,7 +55,10 @@ class _BookingConfirmedViewState extends State<BookingConfirmedView> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.of(context).pop();
+            Navigator.of(context).pushNamedAndRemoveUntil(
+              homeRoute,
+              (route) => false,
+            );
           },
         ),
         title: const Text('Booking Confirmation'),
@@ -85,38 +88,62 @@ class _BookingConfirmedViewState extends State<BookingConfirmedView> {
                   style: const TextStyle(fontSize: 18),
                 ),
                 const SizedBox(height: 32),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                Column(
                   children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        // Handle message button click
-                        Navigator.pushNamed(context, chatRoute);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF3ECAB0),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 32, vertical: 12),
-                      ),
-                      child: const Text(
-                        'Message',
-                        style: TextStyle(fontSize: 16),
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            // Handle message button click
+                            Navigator.pushNamed(context, chatRoute);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF3ECAB0),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 32, vertical: 12),
+                          ),
+                          child: const Text(
+                            'Message',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            // Handle view profile button click
+                            Navigator.pushNamed(
+                                context, serviceProviderProfileRoute);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF061C43),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 32, vertical: 12),
+                          ),
+                          child: const Text(
+                            'View Profile',
+                            style: TextStyle(fontSize: 16, color: Colors.white),
+                          ),
+                        ),
+                      ],
                     ),
+                    const SizedBox(
+                        height: 16), // Add some space between the rows
                     ElevatedButton(
                       onPressed: () {
-                        // Handle view profile button click
-                        Navigator.pushNamed(
-                            context, serviceProviderProfileRoute);
+                        // Handle back to home button click
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                          homeRoute,
+                          (route) => false,
+                        );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF061C43),
+                        backgroundColor: Colors.blue, // Customize the color
                         padding: const EdgeInsets.symmetric(
                             horizontal: 32, vertical: 12),
                       ),
                       child: const Text(
-                        'View Profile',
-                        style: TextStyle(fontSize: 16, color: Colors.white),
+                        'Back to Home',
+                        style: TextStyle(fontSize: 16),
                       ),
                     ),
                   ],

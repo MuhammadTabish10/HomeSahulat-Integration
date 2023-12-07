@@ -69,11 +69,8 @@ class _BookingConfirmedViewState extends State<BookingConfirmedView> {
                 CircleAvatar(
                   radius: 60,
                   backgroundColor: Colors.grey[300],
-                  child: Icon(
-                    Icons.person,
-                    size: 60,
-                    color: Colors.grey[600],
-                  ),
+                  backgroundImage: NetworkImage(
+                      serviceProvider.user.profilePictureUrl ?? ''),
                 ),
                 const SizedBox(height: 16),
                 Text(

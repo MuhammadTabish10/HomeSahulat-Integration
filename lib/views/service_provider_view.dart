@@ -109,73 +109,71 @@ class _ServiceProviderViewState extends State<ServiceProviderView> {
         leadingWidth: 56.0,
         centerTitle: true,
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Text(
-              'Choose the best service provider',
-              style: TextStyle(
-                fontSize: 20.0,
-                fontWeight: FontWeight.bold,
+      body: Expanded(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text(
+                  'Choose the best service provider',
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: serviceProviderList.length,
-              itemBuilder: (context, index) {
-                ServiceProvider provider = serviceProviderList[index];
-                return Container(
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFB2DFDB),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  padding: const EdgeInsets.all(16.0),
-                  margin: const EdgeInsets.symmetric(
-                    vertical: 8.0,
-                    horizontal: 16.0,
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Left: Profile Picture
-                      CircleAvatar(
-                        radius: 64.0,
-                        backgroundImage: NetworkImage(
-                          provider.user.profilePictureUrl ?? '',
+              ListView.builder(
+                shrinkWrap: true,
+                itemCount: serviceProviderList.length,
+                itemBuilder: (context, index) {
+                  ServiceProvider provider = serviceProviderList[index];
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFB2DFDB),
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    padding: const EdgeInsets.all(16.0),
+                    margin: const EdgeInsets.symmetric(
+                      vertical: 8.0,
+                      horizontal: 16.0,
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Left: Profile Picture
+                        CircleAvatar(
+                          radius: 34.0,
+                          backgroundImage: NetworkImage(
+                            provider.user.profilePictureUrl ?? '',
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 16.0),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              provider.user.name,
-                              style: const TextStyle(
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.bold,
+                        const SizedBox(width: 16.0),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                provider.user.name,
+                                style: const TextStyle(
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 8.0),
-                            Text(
-                              provider.services.name,
-                              style: const TextStyle(fontSize: 16.0),
-                            ),
-                            const SizedBox(height: 8.0),
-                            Text(
-                              '${provider.totalExperience} Services | ${provider.totalRating} ratings',
-                              style: const TextStyle(fontSize: 14.0),
-                            ),
-                            const SizedBox(height: 16.0),
-                            Container(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                              const SizedBox(height: 8.0),
+                              Text(
+                                provider.services.name,
+                                style: const TextStyle(fontSize: 16.0),
+                              ),
+                              const SizedBox(height: 8.0),
+                              Text(
+                                '${provider.totalExperience} Services | ${provider.totalRating} ratings',
+                                style: const TextStyle(fontSize: 14.0),
+                              ),
+                              const SizedBox(height: 16.0),
+                              // Move the ElevatedButtons under the image
+                              Row(
                                 children: [
                                   ElevatedButton(
                                     onPressed: () {
@@ -190,11 +188,14 @@ class _ServiceProviderViewState extends State<ServiceProviderView> {
                                     ),
                                     child: const Text('Book'),
                                   ),
+                                  const SizedBox(width: 8.0),
                                   ElevatedButton(
                                     onPressed: () {
                                       // Handle view profile button press
                                       Navigator.pushNamed(
-                                          context, serviceProviderProfileRoute);
+                                        context,
+                                        serviceProviderProfileRoute,
+                                      );
                                     },
                                     style: ElevatedButton.styleFrom(
                                       shape: RoundedRectangleBorder(
@@ -210,17 +211,17 @@ class _ServiceProviderViewState extends State<ServiceProviderView> {
                                   ),
                                 ],
                               ),
-                            )
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

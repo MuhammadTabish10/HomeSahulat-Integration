@@ -48,7 +48,7 @@ class User {
       otp: json['otp'],
       otpFlag: json['otpFlag'],
       location: json['location'] != null
-          ? Location.fromJson(json['location'] as Map<String, dynamic>)
+          ? Location.fromJson(json['location'])
           : null,
     );
   }

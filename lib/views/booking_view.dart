@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:homesahulat_fyp/models/service_provider.dart';
+import 'package:provider/provider.dart';
+import '../config/token_provider.dart';
 import '../constants/routes.dart';
 import 'package:homesahulat_fyp/models/user.dart';
 import 'dart:convert';
@@ -35,6 +37,7 @@ class _BookingViewState extends State<BookingView> {
   @override
   void initState() {
     super.initState();
+    token = Provider.of<TokenProvider>(context, listen: false).token;
     isMounted = true;
   }
 
@@ -55,10 +58,8 @@ class _BookingViewState extends State<BookingView> {
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
 
     if (args != null) {
-      token = args['token'] ?? '';
       serviceProvider = args['serviceProvider'] ?? '';
     } else {
-      token = '';
       serviceProvider = {} as ServiceProvider;
     }
 
@@ -131,7 +132,7 @@ class _BookingViewState extends State<BookingView> {
         Navigator.of(context).pushNamedAndRemoveUntil(
           bookingConfirmedRoute,
           (route) => false,
-          arguments: {'token': token,'serviceProvider':serviceProvider},
+          arguments: {'serviceProvider':serviceProvider},
         );
 
         print('Booking successful');

@@ -47,6 +47,7 @@ dependencies:
   firebase_auth: ^4.12.1
   progress_dialog_null_safe: ^1.0.7
   device_info_plus: ^3.2.3
+  provider: ^6.1.1
   
   
 
@@ -75,6 +76,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - lib/assets/images/
+    - lib/assets/images/design.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

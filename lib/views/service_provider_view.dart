@@ -1,11 +1,13 @@
 // ignore_for_file: avoid_print
 
 import 'package:flutter/material.dart';
+import 'package:homesahulat_fyp/config/token_provider.dart';
 import 'package:homesahulat_fyp/constants/routes.dart';
 import 'package:homesahulat_fyp/models/service_provider.dart';
 import 'dart:convert';
 import 'package:homesahulat_fyp/constants/api_end_points.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class ServiceProviderView extends StatefulWidget {
   const ServiceProviderView({Key? key}) : super(key: key);
@@ -24,6 +26,7 @@ class _ServiceProviderViewState extends State<ServiceProviderView> {
   @override
   void initState() {
     super.initState();
+    token = Provider.of<TokenProvider>(context, listen: false).token;
     isMounted = true;
   }
 
@@ -45,11 +48,8 @@ class _ServiceProviderViewState extends State<ServiceProviderView> {
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
 
     if (args != null) {
-      token = args['token'] ?? '';
       serviceName = args['serviceName'] ?? '';
     } else {
-      // Handle the case where arguments are null
-      token = '';
       serviceName = '';
     }
 
@@ -67,6 +67,7 @@ class _ServiceProviderViewState extends State<ServiceProviderView> {
 
   Future<List<ServiceProvider>> getAllServiceProviders(
       String service, String token) async {
+
     String apiUrl = getAllServiceProvidersByServiceUrl(service);
     final Uri uri = Uri.parse(apiUrl);
 
@@ -177,7 +178,7 @@ class _ServiceProviderViewState extends State<ServiceProviderView> {
                                 ElevatedButton(
                                   onPressed: () {
                                     // Handle book button press
-                                    navigateToBookingView(provider, token);
+                                    navigateToBookingView(provider);
                                   },
                                   style: ElevatedButton.styleFrom(
                                     shape: RoundedRectangleBorder(
@@ -224,10 +225,10 @@ class _ServiceProviderViewState extends State<ServiceProviderView> {
     );
   }
 
-  void navigateToBookingView(ServiceProvider serviceProvider, String token) {
+  void navigateToBookingView(ServiceProvider serviceProvider) {
     Navigator.of(context).pushNamed(
       bookingRoute,
-      arguments: {'token': token, 'serviceProvider': serviceProvider},
+      arguments: {'serviceProvider': serviceProvider},
     );
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 Widget buildReviewItem(
-    String userName, String userProfileImage, int ratings, String note) {
+    String userName, String userProfileImage, double ratings, String note) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 8.0),
     child: Container(
@@ -22,7 +22,7 @@ Widget buildReviewItem(
         children: [
           CircleAvatar(
             radius: 32.0,
-            backgroundImage: AssetImage(userProfileImage),
+            backgroundImage: NetworkImage(userProfileImage),
           ),
           const SizedBox(width: 16.0),
           Expanded(

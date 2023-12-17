@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const MaterialColor primarySwatch =  MaterialColor(0xFF3ECAB0, <int, Color>{
+const MaterialColor primarySwatch = MaterialColor(0xFF3ECAB0, <int, Color>{
   50: Color(0xFFE0F2F1),
   100: Color(0xFFB2DFDB),
   200: Color(0xFF80CBC4),
@@ -14,6 +14,9 @@ const MaterialColor primarySwatch =  MaterialColor(0xFF3ECAB0, <int, Color>{
 });
 
 final ThemeData appTheme = ThemeData(
-  // Define the app's primary color theme
+  // Set the app's primary color theme
   primarySwatch: primarySwatch,
+  appBarTheme: const AppBarTheme(
+    color: primarySwatch, // Set the app bar color
+  ),
 );

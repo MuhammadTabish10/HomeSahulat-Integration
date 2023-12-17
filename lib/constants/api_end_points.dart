@@ -7,6 +7,10 @@ String loginUrl = '${baseURL}login';
 String getLoggedInUserUrl = '${baseURL}user/logged-in';
 String bookUrl = '${baseURL}booking';
 
+String getAllReviewsByServiceProviderId(int id) {
+  return '${baseURL}review/service-provider/$id';
+}
+
 String getOtpVerificationUrl(String id, String otp) {
   return '${baseURL}signup/user/$id/otp-verification/$otp';
 }

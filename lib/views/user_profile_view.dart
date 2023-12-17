@@ -10,6 +10,9 @@ import 'dart:convert';
 import 'package:homesahulat_fyp/constants/api_end_points.dart';
 import 'package:http/http.dart' as http;
 import 'package:homesahulat_fyp/models/location.dart';
+import 'package:provider/provider.dart';
+
+import '../config/token_provider.dart';
 
 class UserProfileView extends StatefulWidget {
   const UserProfileView({Key? key}) : super(key: key);
@@ -26,6 +29,7 @@ class _UserProfileViewState extends State<UserProfileView> {
   @override
   void initState() {
     super.initState();
+    token = Provider.of<TokenProvider>(context, listen: false).token;
     isMounted = true;
   }
 
@@ -42,17 +46,6 @@ class _UserProfileViewState extends State<UserProfileView> {
   }
 
   Future<void> loadData() async {
-    // Extract arguments here
-    final Map<String, dynamic>? args =
-        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-
-    if (args != null) {
-      token = args['token'] ?? '';
-    } else {
-      // Handle the case where arguments are null
-      token = '';
-    }
-
     try {
       final loggedInUser = await getUser(token);
       if (isMounted) {

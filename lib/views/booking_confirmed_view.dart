@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:homesahulat_fyp/config/token_provider.dart';
+import 'package:provider/provider.dart';
 import '../constants/routes.dart';
 import 'package:homesahulat_fyp/models/service_provider.dart';
 import 'package:homesahulat_fyp/constants/api_end_points.dart';
@@ -18,6 +20,7 @@ class _BookingConfirmedViewState extends State<BookingConfirmedView> {
   @override
   void initState() {
     super.initState();
+    token = Provider.of<TokenProvider>(context, listen: false).token;
     isMounted = true;
   }
 
@@ -39,11 +42,9 @@ class _BookingConfirmedViewState extends State<BookingConfirmedView> {
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
 
     if (args != null) {
-      token = args['token'] ?? '';
       serviceProvider = args['serviceProvider'] ?? '';
     } else {
       // Handle the case where arguments are null
-      token = '';
       serviceProvider = {} as ServiceProvider;
     }
   }
@@ -111,8 +112,11 @@ class _BookingConfirmedViewState extends State<BookingConfirmedView> {
                         ElevatedButton(
                           onPressed: () {
                             // Handle view profile button click
-                            Navigator.pushNamed(
-                                context, serviceProviderProfileRoute);
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                                serviceProviderProfileRoute, (route) => false,
+                                arguments: {
+                                  'serviceProvider': serviceProvider
+                                });
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF061C43),

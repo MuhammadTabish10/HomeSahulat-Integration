@@ -22,3 +22,12 @@ String resendOtpUrl(String id) {
 String getAllServiceProvidersByServiceUrl(String service) {
   return '${baseURL}service-provider/service/$service';
 }
+
+String forgotPasswordUrl(String email) {
+  return '${baseURL}user/forgot-password?email=$email';
+}
+
+String resetPasswordUrl(String email, String resetCode, String newPassword) {
+  return '${baseURL}user/reset-password?email=$email&resetCode=$resetCode&newPassword=$newPassword';
+}
+

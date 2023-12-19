@@ -311,7 +311,7 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   int _selectedIndex = 0;
-  late User user = User(name: '', password: '', phone: '');
+  late User user = User(name: '', password: '', phone: '', email: '');
   late String token;
   bool isMounted = false;
   late List<Widget> _widgetOptions;

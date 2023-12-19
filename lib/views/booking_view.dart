@@ -20,7 +20,7 @@ class BookingView extends StatefulWidget {
 }
 
 class _BookingViewState extends State<BookingView> {
-  late User user = User(name: '', password: '', phone: '');
+  late User user = User(name: '', password: '', phone: '', email: '');
   late ServiceProvider serviceProvider;
   late String token;
   bool isMounted = false;

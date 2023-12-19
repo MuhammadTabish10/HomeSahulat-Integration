@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:homesahulat_fyp/views/booking_confirmed_view.dart';
 import 'package:homesahulat_fyp/views/booking_view.dart';
 import 'package:homesahulat_fyp/views/chat_view.dart';
+import 'package:homesahulat_fyp/views/forgot_password_view.dart';
 import 'package:homesahulat_fyp/views/login_view.dart';
 import 'package:homesahulat_fyp/views/otp_verification_view.dart';
 import 'package:homesahulat_fyp/views/register_view.dart';
@@ -21,6 +22,7 @@ const String chatRoute = '/chat';
 const String serviceProviderProfileRoute = '/serviceProviderProfile';
 const String otpVerificationRoute = '/otpVerification';
 const String userProfileRoute = '/userProfile';
+const String forgotPasswordRoute = '/forgotPassword';
 
 final Map<String, WidgetBuilder> routes = {
   loginRoute: (context) => const LoginView(),
@@ -33,4 +35,5 @@ final Map<String, WidgetBuilder> routes = {
   bookingConfirmedRoute: (context) => const BookingConfirmedView(),
   otpVerificationRoute: (context) => const OTPVerificationScreen(),
   userProfileRoute: (context) => const UserProfileView(),
+  forgotPasswordRoute: (context) => ForgotPasswordScreen(),
 };

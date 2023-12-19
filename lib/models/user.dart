@@ -9,7 +9,7 @@ class User {
   final int? id;
   final String name;
   final String password;
-  final String? email;
+  final String email;
   final String? firstName;
   final String? lastName;
   final String phone;
@@ -23,7 +23,7 @@ class User {
     this.id,
     required this.name,
     required this.password,
-    this.email,
+    required this.email,
     this.firstName,
     this.lastName,
     required this.phone,

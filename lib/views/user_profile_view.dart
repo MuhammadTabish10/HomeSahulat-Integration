@@ -22,7 +22,7 @@ class UserProfileView extends StatefulWidget {
 }
 
 class _UserProfileViewState extends State<UserProfileView> {
-  late User user = User(name: '', password: '', phone: '');
+  late User user = User(name: '', password: '', phone: '', email: '');
   late String token;
   bool isMounted = false;
 
@@ -113,7 +113,7 @@ class _UserProfileViewState extends State<UserProfileView> {
           ),
           const SizedBox(height: 16.0),
           buildProfileItem('Name', user.name),
-          buildProfileItem('Email', user.email ?? ''),
+          buildProfileItem('Email', user.email),
           buildProfileItem('First Name', user.firstName ?? ''),
           buildProfileItem('Last Name', user.lastName ?? ''),
           buildProfileItem('Phone', user.phone),

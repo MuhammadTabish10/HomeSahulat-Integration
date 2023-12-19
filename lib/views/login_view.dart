@@ -204,7 +204,7 @@ class _LoginViewState extends State<LoginView> with TickerProviderStateMixin {
                     padding: const EdgeInsets.only(right: 16.0),
                     child: TextButton(
                       onPressed: () {
-                        // TODO: Implement forgot password functionality
+                        Navigator.of(context).pushNamed(forgotPasswordRoute);
                       },
                       child: const Text(
                         'Forgot Password?',
@@ -265,7 +265,10 @@ class _LoginViewState extends State<LoginView> with TickerProviderStateMixin {
                   Navigator.of(context)
                       .pushNamedAndRemoveUntil(registerRoute, (route) => false);
                 },
-                child: const Text('Not Registered yet? Register here!'),
+                child: const Text(
+                  'Not Registered yet? Register here!',
+                  style: TextStyle(color: Colors.grey),
+                ),
               ),
             )
           ],

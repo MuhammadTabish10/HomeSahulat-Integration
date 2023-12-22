@@ -88,49 +88,58 @@ class _UserProfileViewState extends State<UserProfileView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
-        padding: const EdgeInsets.all(16.0),
-        children: [
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      FullScreenImage(user.profilePictureUrl ?? ''),
-                ),
-              );
-            },
-            child: Hero(
-              tag: 'profile_image',
-              child: Center(
-                child: CircleAvatar(
-                  radius: 60.0,
-                  backgroundImage: NetworkImage(user.profilePictureUrl ?? ''),
+      body: Container(
+        decoration: const BoxDecoration(
+          // Add a background image to the container
+          image: DecorationImage(
+            image: AssetImage('lib/assets/images/design.png'),
+            fit: BoxFit.fill,
+          ),
+        ),
+        child: ListView(
+          padding: const EdgeInsets.all(16.0),
+          children: [
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        FullScreenImage(user.profilePictureUrl ?? ''),
+                  ),
+                );
+              },
+              child: Hero(
+                tag: 'profile_image',
+                child: Center(
+                  child: CircleAvatar(
+                    radius: 60.0,
+                    backgroundImage: NetworkImage(user.profilePictureUrl ?? ''),
+                  ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(height: 16.0),
-          buildProfileItem('Name', user.name),
-          buildProfileItem('Email', user.email),
-          buildProfileItem('First Name', user.firstName ?? ''),
-          buildProfileItem('Last Name', user.lastName ?? ''),
-          buildProfileItem('Phone', user.phone),
-          buildLocationInfo(user.location ??
-              Location(
-                id: 0,
-                name: '',
-                address: '',
-                city: '',
-                state: '',
-                postalCode: 0,
-                country: '',
-                latitude: 0.0,
-                longitude: 0.0,
-                status: false,
-              )),
-        ],
+            const SizedBox(height: 16.0),
+            buildProfileItem('Name', user.name),
+            buildProfileItem('Email', user.email),
+            buildProfileItem('First Name', user.firstName ?? ''),
+            buildProfileItem('Last Name', user.lastName ?? ''),
+            buildProfileItem('Phone', user.phone),
+            buildLocationInfo(user.location ??
+                Location(
+                  id: 0,
+                  name: '',
+                  address: '',
+                  city: '',
+                  state: '',
+                  postalCode: 0,
+                  country: '',
+                  latitude: 0.0,
+                  longitude: 0.0,
+                  status: false,
+                )),
+          ],
+        ),
       ),
     );
   }

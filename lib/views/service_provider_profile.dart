@@ -325,87 +325,96 @@ class _ServiceProviderProfileViewState
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Profile Information Section
-                  Container(
-                    alignment: Alignment.center,
-                    child: CircleAvatar(
-                      radius: 64.0,
-                      backgroundImage: NetworkImage(
-                        serviceProvider.user.profilePictureUrl ?? '',
+          : Container(
+              decoration: const BoxDecoration(
+                // Add a background image to the container
+                image: DecorationImage(
+                  image: AssetImage('lib/assets/images/design.png'),
+                  fit: BoxFit.fill,
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Profile Information Section
+                    Container(
+                      alignment: Alignment.center,
+                      child: CircleAvatar(
+                        radius: 64.0,
+                        backgroundImage: NetworkImage(
+                          serviceProvider.user.profilePictureUrl ?? '',
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 16.0),
-                  Text(
-                    serviceProvider.user.name,
-                    style: const TextStyle(
-                      fontSize: 24.0,
-                      fontWeight: FontWeight.bold,
+                    const SizedBox(height: 16.0),
+                    Text(
+                      serviceProvider.user.name,
+                      style: const TextStyle(
+                        fontSize: 24.0,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 8.0),
-                  Text(
-                    serviceProvider.services.name,
-                    style: const TextStyle(fontSize: 18.0),
-                  ),
-                  const SizedBox(height: 24.0),
-                  // Message and Call Buttons
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          Navigator.pushNamed(context, chatRoute);
+                    const SizedBox(height: 8.0),
+                    Text(
+                      serviceProvider.services.name,
+                      style: const TextStyle(fontSize: 18.0),
+                    ),
+                    const SizedBox(height: 24.0),
+                    // Message and Call Buttons
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ElevatedButton.icon(
+                          onPressed: () {
+                            Navigator.pushNamed(context, chatRoute);
+                          },
+                          icon: const Icon(Icons.message),
+                          label: const Text('Message'),
+                        ),
+                        ElevatedButton.icon(
+                          onPressed: () async {
+                            String phoneNumber =
+                                'tel:${serviceProvider.user.phone}';
+                            await launchUrl(phoneNumber as Uri);
+                          },
+                          icon: const Icon(Icons.phone),
+                          label: const Text('Phone'),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 24.0),
+
+                    // Review Section
+                    const Text(
+                      'Reviews',
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+
+                    // Display fetched reviews
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: reviewList.length,
+                        itemBuilder: (context, index) {
+                          final review = reviewList[index];
+                          return buildReviewItem(
+                            review.user
+                                .name, // Assuming you have a name property in User
+                            review.user.profilePictureUrl ??
+                                '', // Assuming you have a profile picture URL in User
+                            review.rating, // Assuming rating is a double
+                            review.note,
+                          );
                         },
-                        icon: const Icon(Icons.message),
-                        label: const Text('Message'),
                       ),
-                      ElevatedButton.icon(
-                        onPressed: () async {
-                          String phoneNumber =
-                              'tel:${serviceProvider.user.phone}';
-                          await launchUrl(phoneNumber as Uri);
-                        },
-                        icon: const Icon(Icons.phone),
-                        label: const Text('Phone'),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 24.0),
-
-                  // Review Section
-                  const Text(
-                    'Reviews',
-                    style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
                     ),
-                  ),
-
-                  // Display fetched reviews
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: reviewList.length,
-                      itemBuilder: (context, index) {
-                        final review = reviewList[index];
-                        return buildReviewItem(
-                          review.user
-                              .name, // Assuming you have a name property in User
-                          review.user.profilePictureUrl ??
-                              '', // Assuming you have a profile picture URL in User
-                          review.rating, // Assuming rating is a double
-                          review.note,
-                        );
-                      },
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
     );

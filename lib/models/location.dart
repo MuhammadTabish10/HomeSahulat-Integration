@@ -4,34 +4,31 @@ Location locationJson(String str) => Location.fromJson(json.decode(str));
 String locationToJson(Location data) => json.encode(data.toJson());
 
 class Location {
-  final int id;
-  final String name;
+  final int? id;
   final String address;
   final String city;
   final String state;
   final int postalCode;
   final String country;
-  final double latitude;
-  final double longitude;
-  final bool status;
+  final double? latitude;
+  final double? longitude;
+  final bool? status;
 
   Location({
-    required this.id,
-    required this.name,
+    this.id,
     required this.address,
     required this.city,
     required this.state,
     required this.postalCode,
     required this.country,
-    required this.latitude,
-    required this.longitude,
-    required this.status,
+    this.latitude,
+    this.longitude,
+    this.status,
   });
 
   factory Location.fromJson(Map<String, dynamic> json) {
     return Location(
       id: json['id'],
-      name: json['name'],
       address: json['address'],
       city: json['city'],
       state: json['state'],
@@ -46,7 +43,6 @@ class Location {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'name': name,
       'address': address,
       'city': city,
       'state': state,

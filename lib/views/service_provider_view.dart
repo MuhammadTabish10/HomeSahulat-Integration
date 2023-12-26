@@ -84,7 +84,6 @@ class _ServiceProviderViewState extends State<ServiceProviderView> {
           'Authorization': 'Bearer $token',
         },
       );
-
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
         List<ServiceProvider> providers =
@@ -98,8 +97,7 @@ class _ServiceProviderViewState extends State<ServiceProviderView> {
     } catch (e) {
       print('Error fetching data: $e');
       return [];
-    }
-    finally {
+    } finally {
       setState(() {
         _isLoading = false; // Set loading to false when login is complete
       });

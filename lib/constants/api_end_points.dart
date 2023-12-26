@@ -6,6 +6,16 @@ String signUpUrl = '${baseURL}signup';
 String loginUrl = '${baseURL}login';
 String getLoggedInUserUrl = '${baseURL}user/logged-in';
 String bookUrl = '${baseURL}booking';
+String createServiceProviderUrl = '${baseURL}service-provider';
+String addLocationUrl = '${baseURL}location';
+
+String updateLocationUrl(int id){
+  return '${baseURL}location/$id';
+}
+
+String updateUserUrl(int id){
+  return '${baseURL}user/$id';
+}
 
 String getAllReviewsByServiceProviderId(int id) {
   return '${baseURL}review/service-provider/$id';
@@ -30,4 +40,3 @@ String forgotPasswordUrl(String email) {
 String resetPasswordUrl(String email, String resetCode, String newPassword) {
   return '${baseURL}user/reset-password?email=$email&resetCode=$resetCode&newPassword=$newPassword';
 }
-

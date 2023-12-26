@@ -295,6 +295,7 @@ import 'package:homesahulat_fyp/config/token_provider.dart';
 import 'package:homesahulat_fyp/constants/routes.dart';
 import 'package:homesahulat_fyp/models/user.dart';
 import 'package:homesahulat_fyp/utilities/show_logout_dialog.dart';
+import 'package:homesahulat_fyp/views/become_service_provider_view.dart';
 import 'package:homesahulat_fyp/views/user_profile_view.dart';
 import 'package:homesahulat_fyp/widget/build_button.dart';
 import 'dart:convert';
@@ -350,7 +351,7 @@ class _HomeViewState extends State<HomeView> {
       buildHomeScreen(),
       const Text('Search'),
       const UserProfileView(), // Profile screen directly embedded
-      const Text('Request'),
+      const BecomeServiceProviderView(),
       const Text("FAQ's"),
       const Text('Settings'),
       const Text('Logout'),
@@ -531,7 +532,7 @@ class _HomeViewState extends State<HomeView> {
           _buildDrawerItem(0, Icons.home, 'Home'),
           _buildDrawerItem(1, Icons.search, 'Search'),
           _buildDrawerItem(2, Icons.person, 'Profile'),
-          _buildDrawerItem(3, Icons.request_page_rounded, 'Request'),
+          _buildDrawerItem(3, Icons.person_add, 'Become Service Provider'),
           _buildDrawerItem(4, Icons.adf_scanner_rounded, "FAQ's"),
           _buildDrawerItem(5, Icons.settings, 'Settings'),
           ListTile(

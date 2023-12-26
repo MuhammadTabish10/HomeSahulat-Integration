@@ -4,16 +4,16 @@ Services servicesJson(String str) => Services.fromJson(json.decode(str));
 String servicesToJson(Services data) => json.encode(data.toJson());
 
 class Services {
-  int id;
+  int? id;
   String name;
-  String description;
-  bool status;
+  String? description;
+  bool? status;
 
   Services({
-    required this.id,
+    this.id,
     required this.name,
-    required this.description,
-    required this.status,
+    this.description,
+    this.status,
   });
 
   factory Services.fromJson(Map<String, dynamic> json) {

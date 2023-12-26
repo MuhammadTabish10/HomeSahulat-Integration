@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:homesahulat_fyp/views/become_service_provider_view.dart';
 import 'package:homesahulat_fyp/views/booking_confirmed_view.dart';
 import 'package:homesahulat_fyp/views/booking_view.dart';
 import 'package:homesahulat_fyp/views/chat_view.dart';
@@ -23,6 +24,8 @@ const String serviceProviderProfileRoute = '/serviceProviderProfile';
 const String otpVerificationRoute = '/otpVerification';
 const String userProfileRoute = '/userProfile';
 const String forgotPasswordRoute = '/forgotPassword';
+const String appointmentRoute = '/appointment';
+const String becomeServiceProviderRoute = '/becomeServiceProvider';
 
 final Map<String, WidgetBuilder> routes = {
   loginRoute: (context) => const LoginView(),
@@ -36,4 +39,6 @@ final Map<String, WidgetBuilder> routes = {
   otpVerificationRoute: (context) => const OTPVerificationScreen(),
   userProfileRoute: (context) => const UserProfileView(),
   forgotPasswordRoute: (context) => ForgotPasswordScreen(),
+  // appointmentRoute: (context) => AppointmentScreen(),
+  becomeServiceProviderRoute: (context) => BecomeServiceProviderView(),
 };

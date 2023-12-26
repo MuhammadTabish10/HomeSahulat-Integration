@@ -7,6 +7,7 @@ class Booking {
   DateTime appointmentDate;
   DateTime appointmentTime;
   bool status;
+  String? bookingStatus;
   User user;
   ServiceProvider serviceProvider;
 
@@ -16,6 +17,7 @@ class Booking {
     required this.appointmentDate,
     required this.appointmentTime,
     required this.status,
+    this.bookingStatus,
     required this.user,
     required this.serviceProvider,
   });
@@ -26,9 +28,10 @@ class Booking {
         appointmentDate: DateTime.parse(json['appointmentDate']),
         appointmentTime: DateTime.parse(json['appointmentTime']),
         status: json['status'] as bool,
+        bookingStatus: json['bookingStatus'] as String,
         user: User.fromJson(json['user'] as Map<String, dynamic>),
-        serviceProvider:
-            ServiceProvider.fromJson(json['serviceProvider'] as Map<String, dynamic>),
+        serviceProvider: ServiceProvider.fromJson(
+            json['serviceProvider'] as Map<String, dynamic>),
       );
 
   Map<String, dynamic> toJson() => {
@@ -37,6 +40,7 @@ class Booking {
         'appointmentDate': appointmentDate.toIso8601String(),
         'appointmentTime': appointmentTime.toIso8601String(),
         'status': status,
+        'bookingStatus': bookingStatus,
         'user': user.toJson(),
         'serviceProvider': serviceProvider.toJson(),
       };

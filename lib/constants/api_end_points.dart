@@ -8,12 +8,18 @@ String getLoggedInUserUrl = '${baseURL}user/logged-in';
 String bookUrl = '${baseURL}booking';
 String createServiceProviderUrl = '${baseURL}service-provider';
 String addLocationUrl = '${baseURL}location';
+String getBookingsByLoggedInUserUrl = '${baseURL}booking/by-logged-in-user';
 
-String updateLocationUrl(int id){
+
+String getServiceByNameUrl(String name){
+  return '${baseURL}service/name/$name';
+}
+
+String updateLocationUrl(int id) {
   return '${baseURL}location/$id';
 }
 
-String updateUserUrl(int id){
+String updateUserUrl(int id) {
   return '${baseURL}user/$id';
 }
 

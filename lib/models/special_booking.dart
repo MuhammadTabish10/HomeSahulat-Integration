@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:homesahulat_fyp/models/service_provider.dart';
 import 'package:homesahulat_fyp/models/user.dart';
 
-class Booking {
+class SpecialBooking {
   int id;
   DateTime? createdAt;
   DateTime? appointmentDate;
@@ -10,9 +9,8 @@ class Booking {
   bool status;
   String? bookingStatus;
   User user;
-  ServiceProvider serviceProvider;
 
-  Booking({
+  SpecialBooking({
     required this.id,
     required this.createdAt,
     required this.appointmentDate,
@@ -20,11 +18,10 @@ class Booking {
     required this.status,
     this.bookingStatus,
     required this.user,
-    required this.serviceProvider,
   });
 
-  factory Booking.fromJson(Map<String, dynamic> json) {
-    return Booking(
+  factory SpecialBooking.fromJson(Map<String, dynamic> json) {
+    return SpecialBooking(
       id: json['id'] as int,
       createdAt: _parseDateTime(json['createdAt']),
       appointmentDate: _parseDate(json['appointmentDate']),
@@ -32,9 +29,6 @@ class Booking {
       status: json['status'] as bool,
       bookingStatus: json['bookingStatus'] as String,
       user: User.fromJson(_excludeNullFields(json['user'])),
-      serviceProvider: ServiceProvider.fromJson(
-        json['serviceProvider'],
-      ),
     );
   }
 
@@ -63,7 +57,6 @@ class Booking {
         'status': status,
         'bookingStatus': bookingStatus,
         'user': user.toJson(),
-        'serviceProvider': serviceProvider.toJson(),
       };
 
   String _formatDate(DateTime date) {

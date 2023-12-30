@@ -17,6 +17,8 @@ class User {
   final String? deviceId;
   final String? otp;
   final bool? otpFlag;
+  final String? resetCode; 
+  final dynamic resetCodeTimestamp; 
   final bool? status;
   final List<Role>? roles; 
   Location? location;
@@ -32,6 +34,8 @@ class User {
     this.deviceId,
     this.otp,
     this.otpFlag,
+    this.resetCode,
+    this.resetCodeTimestamp,
     this.status,
     this.roles,
     this.location,

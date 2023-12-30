@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:homesahulat_fyp/constants/routes.dart';
 import 'package:homesahulat_fyp/constants/api_end_points.dart';
 import 'package:homesahulat_fyp/widget/custom_toast.dart';
+import 'package:homesahulat_fyp/models/role.dart';
 // import 'package:homesahulat_fyp/service/device_id_provider.dart';
 import 'package:http/http.dart' as http;
 
@@ -42,7 +43,7 @@ class _RegisterViewState extends State<RegisterView> {
   }
 
   Future<void> registerUser(
-      String name, String phone, String email, String password) async {
+      String name, String phone, String email, String password, List<Role>? roles) async {
     setState(() {
       _isLoading = true; // Set loading to true when registration starts
     });
@@ -60,6 +61,7 @@ class _RegisterViewState extends State<RegisterView> {
           'email': email,
           'phone': phone,
           'password': password,
+          'roles': roles?.map((role) => {'id': 1}).toList(),
           // 'deviceId': "deviceId"
         }),
       );
@@ -238,7 +240,8 @@ class _RegisterViewState extends State<RegisterView> {
                     String email = _email.text;
                     String phone = _phoneNumber.text;
                     String password = _password.text;
-                    await registerUser(name, phone, email, password);
+                    Role role = Role(id: 1, name: 'ROLE_ADMIN');
+                    await registerUser(name, phone, email, password, [role]);
                   },
                   child: const Text(
                     'Register',
@@ -269,4 +272,3 @@ class _RegisterViewState extends State<RegisterView> {
     );
   }
 }
-

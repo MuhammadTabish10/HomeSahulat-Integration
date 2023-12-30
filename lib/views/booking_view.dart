@@ -393,30 +393,39 @@ class _BookingViewState extends State<BookingView> {
   }
 
   Future<void> loadData() async {
-    final Map<String, dynamic>? args =
-        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-
-    if (args != null) {
-      serviceProvider = args['serviceProvider'] ?? '';
-    } else {
-      serviceProvider = {} as ServiceProvider;
-    }
-
     try {
+      setState(() {
+        _isLoading = true;
+      });
+
+      final Map<String, dynamic>? args =
+          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+
+      if (args != null) {
+        serviceProvider = args['serviceProvider'] ?? '';
+      } else {
+        serviceProvider = {} as ServiceProvider;
+      }
+
       final loggedInUser = await getUser(token);
       if (isMounted) {
         setState(() {
           user = loggedInUser;
         });
       }
+
+      descriptionController.text = '';
+      addressController.text = user.location?.address ?? '';
+      cityController.text = user.location?.city ?? '';
     } catch (e) {
       print('Error fetching data: $e');
+    } finally {
+      if (isMounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
-
-    // Set initial values for controllers
-    descriptionController.text = '';
-    addressController.text = user.location?.address ?? '';
-    cityController.text = user.location?.city ?? '';
   }
 
   Future<User> getUser(String token) async {
@@ -551,7 +560,6 @@ class _BookingViewState extends State<BookingView> {
       body: Container(
         height: MediaQuery.of(context).size.height,
         decoration: const BoxDecoration(
-          // Add a background image to the container
           image: DecorationImage(
             image: AssetImage('lib/assets/images/design.png'),
             fit: BoxFit.cover,
@@ -589,7 +597,6 @@ class _BookingViewState extends State<BookingView> {
                     fillColor: Colors.grey[200],
                   ),
                 ),
-                const SizedBox(height: 10),
                 const SizedBox(height: 10),
                 TextFormField(
                   controller: addressController,
@@ -667,7 +674,6 @@ class _BookingViewState extends State<BookingView> {
                   trailing: const Icon(Icons.access_time),
                   onTap: () => _selectTime(context),
                 ),
-
                 const SizedBox(height: 20),
 
                 // Booking button
@@ -677,7 +683,6 @@ class _BookingViewState extends State<BookingView> {
                     width: 200,
                     child: ElevatedButton(
                       onPressed: () async {
-                        // Handle "Book Now" button press
                         await book(
                             selectedDate, selectedTime, serviceProvider, user);
                       },
@@ -697,6 +702,15 @@ class _BookingViewState extends State<BookingView> {
                     ),
                   ),
                 ),
+
+                const SizedBox(height: 20),
+
+                // Loader widget based on _isLoading
+                _isLoading
+                    ? const Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : Container(),
               ],
             ),
           ),

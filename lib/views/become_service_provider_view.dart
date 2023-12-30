@@ -227,7 +227,6 @@ import 'package:provider/provider.dart';
 import 'package:homesahulat_fyp/constants/api_end_points.dart';
 import 'package:homesahulat_fyp/config/token_provider.dart';
 import 'package:homesahulat_fyp/constants/routes.dart';
-import 'package:homesahulat_fyp/models/attachment.dart';
 import 'package:homesahulat_fyp/models/location.dart';
 import 'package:homesahulat_fyp/models/services.dart';
 import 'package:homesahulat_fyp/models/user.dart';
@@ -248,6 +247,7 @@ class BecomeServiceProviderView extends StatefulWidget {
 class _BecomeServiceProviderViewState extends State<BecomeServiceProviderView> {
   List<String> servicesList = ['Plumber', 'Electrician', 'Carpenter'];
   late User user;
+  late Services service;
   late String token;
   bool _isLoading = false;
   String? selectedService;
@@ -256,6 +256,7 @@ class _BecomeServiceProviderViewState extends State<BecomeServiceProviderView> {
 
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController hourlyPriceController = TextEditingController();
+  final TextEditingController cnicController = TextEditingController();
   final TextEditingController totalExperienceController =
       TextEditingController();
 
@@ -264,6 +265,7 @@ class _BecomeServiceProviderViewState extends State<BecomeServiceProviderView> {
     super.initState();
     _isLoading = false;
     user = User(name: '', password: '', phone: '', email: '');
+    service = Services(name: '');
     token = Provider.of<TokenProvider>(context, listen: false).token;
     loadData();
   }
@@ -306,14 +308,41 @@ class _BecomeServiceProviderViewState extends State<BecomeServiceProviderView> {
     }
   }
 
+  Future<Services> getServiceByName(String name) async {
+    String apiUrl = getServiceByNameUrl(name);
+    final Uri uri = Uri.parse(apiUrl);
+
+    try {
+      final response = await http.get(
+        uri,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
+        Services service = Services.fromJson(data);
+        return service;
+      } else {
+        debugPrint('Failed to load logged in service: ${response.statusCode}');
+        return service;
+      }
+    } catch (e) {
+      debugPrint('Error fetching data: $e');
+      return service;
+    }
+  }
+
   Future<void> createServiceProvider(
       String description,
+      String cnicNo,
       double hourlyPrice,
       double totalExperience,
       bool haveShop,
       User user,
-      Services services,
-      Attachment attachment) async {
+      Services services) async {
     setState(() {
       _isLoading = true;
     });
@@ -327,14 +356,15 @@ class _BecomeServiceProviderViewState extends State<BecomeServiceProviderView> {
         },
         body: json.encode({
           'description': description,
+          'cnicNo': cnicNo,
           'hourlyPrice': hourlyPrice,
           'totalExperience': totalExperience,
           'haveShop': haveShop,
           'user': {'id': user.id},
           'services': {'id': services.id},
-          'attachment': {'cnicUrl': attachment.cnicUrl}
         }),
       );
+      debugPrint('Response Body: ${response.body}');
 
       if (response.statusCode == 200) {
         Navigator.of(context).pushNamedAndRemoveUntil(
@@ -367,7 +397,14 @@ class _BecomeServiceProviderViewState extends State<BecomeServiceProviderView> {
         } else if (errorData.containsKey('attachment')) {
           final String attachmentError = errorData['attachment'].toString();
           CustomToast.showAlert(context, attachmentError);
-        } else {
+        } else if (errorData.containsKey('cnicNo')) {
+          final String cnicError = errorData['cnicNo'].toString();
+          CustomToast.showAlert(context, cnicError);
+        } else if (errorData.containsKey('ServiceProvider already exists')) {
+          final String error = errorData['error'].toString();
+          CustomToast.showAlert(context, error);
+        }
+         else {
           // Display a generic error message for other errors
           final String errorMessage = errorData['error'].toString();
           CustomToast.showAlert(context, errorMessage);
@@ -426,6 +463,11 @@ class _BecomeServiceProviderViewState extends State<BecomeServiceProviderView> {
                               const InputDecoration(labelText: 'Description'),
                         ),
                         TextField(
+                          controller: cnicController,
+                          decoration:
+                              const InputDecoration(labelText: 'Cnic No'),
+                        ),
+                        TextField(
                           controller: hourlyPriceController,
                           decoration: const InputDecoration(
                               labelText: 'Hourly Price in Rs'),
@@ -476,7 +518,7 @@ class _BecomeServiceProviderViewState extends State<BecomeServiceProviderView> {
 
                             if (pickedFile != null) {
                               // Do something with the picked image file
-                              print('Image Path: ${pickedFile.path}');
+                              debugPrint('Image Path: ${pickedFile.path}');
                               setState(() {
                                 imageName = pickedFile.name;
                               });
@@ -487,7 +529,7 @@ class _BecomeServiceProviderViewState extends State<BecomeServiceProviderView> {
                             children: [
                               Icon(Icons.image),
                               SizedBox(width: 8.0),
-                              Text('Pick Image'),
+                              Text('Upload Cnic Picture'),
                             ],
                           ),
                         ),
@@ -509,25 +551,39 @@ class _BecomeServiceProviderViewState extends State<BecomeServiceProviderView> {
                         // Submit button
                         ElevatedButton(
                           onPressed: () async {
-                            // Call the function to create a service provider
-                            createServiceProvider(
-                              descriptionController.text,
-                              double.parse(hourlyPriceController.text),
-                              double.parse(totalExperienceController.text),
-                              localHaveShop,
-                              user, // Pass relevant objects
-                              Services(
-                                  id: 1,
-                                  name: selectedService
-                                      .toString()), // Replace with the actual service
-                              Attachment(cnicUrl: 'sample_url'),
-                            );
-                            Navigator.pop(context); // Close the bottom sheet
+                            try {
+                              // Call the function to get service by name
+                              Services service =
+                                  await getServiceByName(selectedService!);
+
+                              // Check if the service is not null before proceeding
+                              if (service != null) {
+                                // Call the function to create a service provider
+                                await createServiceProvider(
+                                  descriptionController.text,
+                                  cnicController.text,
+                                  double.parse(hourlyPriceController.text),
+                                  double.parse(totalExperienceController.text),
+                                  localHaveShop,
+                                  user,
+                                  service,
+                                );
+
+                                // Close the bottom sheet
+                                // Navigator.pop(context);
+                              } else {
+                                // Handle the case when the service is null
+                                debugPrint('Service not found');
+                              }
+                            } catch (error) {
+                              // Handle errors during API calls
+                              debugPrint('Error: $error');
+                            }
                           },
                           child: _isLoading
                               ? const CircularProgressIndicator()
                               : const Text('Submit'),
-                        ),
+                        )
                       ],
                     ),
                   ),
@@ -596,7 +652,7 @@ class _BecomeServiceProviderViewState extends State<BecomeServiceProviderView> {
                 // Button to edit additional details
                 ElevatedButton(
                   onPressed: _showEditDetailsOverlay,
-                  child: const Text('Edit Additional Details'),
+                  child: const Text('Add Additional Details'),
                 ),
               ],
             ),

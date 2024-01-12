@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:homesahulat_fyp/config/token_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 import '../constants/routes.dart';
 import 'package:homesahulat_fyp/models/service_provider.dart';
 import 'package:homesahulat_fyp/constants/api_end_points.dart';
@@ -104,8 +105,15 @@ class _BookingConfirmedViewState extends State<BookingConfirmedView> {
                         children: [
                           ElevatedButton(
                             onPressed: () {
-                              // Handle message button click
-                              Navigator.pushNamed(context, chatRoute);
+                              // Generate a random roomId using the uuid package
+                              String roomId = const Uuid().v4();
+
+                              // Navigate to the ChatScreen with the generated roomId
+                              Navigator.pushNamed(
+                                context,
+                                chatRoute,
+                                arguments: {'roomId': roomId},
+                              );
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF3ECAB0),

@@ -10,7 +10,7 @@ class Booking {
   bool status;
   String? bookingStatus;
   User user;
-  ServiceProvider serviceProvider;
+  ServiceProvider? serviceProvider;
 
   Booking({
     required this.id,
@@ -20,7 +20,7 @@ class Booking {
     required this.status,
     this.bookingStatus,
     required this.user,
-    required this.serviceProvider,
+    this.serviceProvider,
   });
 
   factory Booking.fromJson(Map<String, dynamic> json) {
@@ -63,7 +63,7 @@ class Booking {
         'status': status,
         'bookingStatus': bookingStatus,
         'user': user.toJson(),
-        'serviceProvider': serviceProvider.toJson(),
+        'serviceProvider': serviceProvider!.toJson(),
       };
 
   String _formatDate(DateTime date) {

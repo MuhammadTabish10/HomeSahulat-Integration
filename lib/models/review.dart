@@ -12,7 +12,7 @@ class Review {
   final String note;
   final double rating;
   final bool status;
-  final ServiceProvider serviceProvider;
+  // final ServiceProvider serviceProvider;
   final User user;
 
   Review({
@@ -21,7 +21,7 @@ class Review {
     required this.note,
     required this.rating,
     required this.status,
-    required this.serviceProvider,
+    // required this.serviceProvider,
     required this.user,
   });
 
@@ -31,7 +31,7 @@ class Review {
         note: json['note'] as String,
         rating: json['rating'] as double,
         status: json['status'] as bool,
-        serviceProvider: ServiceProvider.fromJson(json['serviceProvider']),
+        // serviceProvider: ServiceProvider.fromJson(json['serviceProvider']),
         user: User.fromJson(json['user']),
       );
 
@@ -41,7 +41,7 @@ class Review {
         'note': note,
         'rating': rating,
         'status': status,
-        'serviceProvider': serviceProvider.toJson(),
+        // 'serviceProvider': serviceProvider.toJson(),
         'user': user.toJson(),
       };
 }

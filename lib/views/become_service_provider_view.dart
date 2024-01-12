@@ -1,227 +1,6 @@
-// import 'dart:async';
-
-// import 'package:flutter/material.dart';
-// import 'package:homesahulat_fyp/constants/routes.dart';
-// import 'package:homesahulat_fyp/models/attachment.dart';
-// import 'package:homesahulat_fyp/models/user.dart';
-// import 'package:homesahulat_fyp/models/services.dart';
-// import 'package:homesahulat_fyp/utilities/full_screen_image.dart';
-// import 'package:homesahulat_fyp/widget/build_profile_item.dart';
-// import 'dart:convert';
-// import 'package:homesahulat_fyp/constants/api_end_points.dart';
-// import 'package:homesahulat_fyp/widget/custom_toast.dart';
-// import 'package:http/http.dart' as http;
-// import 'package:homesahulat_fyp/models/location.dart';
-// import 'package:provider/provider.dart';
-
-// import '../config/token_provider.dart';
-
-// class BecomeServiceProviderView extends StatefulWidget {
-//   const BecomeServiceProviderView({Key? key}) : super(key: key);
-
-//   @override
-//   _BecomeServiceProviderViewState createState() => _BecomeServiceProviderViewState();
-// }
-
-// class _BecomeServiceProviderViewState extends State<BecomeServiceProviderView> {
-//   late User user = User(name: '', password: '', phone: '', email: '');
-//   late String token;
-//   bool isMounted = false;
-//     late bool _isLoading;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _isLoading = false;
-//     token = Provider.of<TokenProvider>(context, listen: false).token;
-//     isMounted = true;
-//   }
-
-//   @override
-//   void dispose() {
-//     isMounted = false;
-//     super.dispose();
-//   }
-
-//   @override
-//   void didChangeDependencies() {
-//     super.didChangeDependencies();
-//     loadData();
-//   }
-
-//   Future<void> loadData() async {
-//     try {
-//       final loggedInUser = await getUser(token);
-//       if (isMounted) {
-//         setState(() {
-//           user = loggedInUser;
-//         });
-//       }
-//     } catch (e) {
-//       debugPrint('Error fetching data: $e');
-//     }
-//   }
-
-//   Future<User> getUser(String token) async {
-//     String apiUrl = getLoggedInUserUrl;
-//     final Uri uri = Uri.parse(apiUrl);
-
-//     try {
-//       final response = await http.get(
-//         uri,
-//         headers: {
-//           'Content-Type': 'application/json',
-//           'Authorization': 'Bearer $token',
-//         },
-//       );
-
-//       if (response.statusCode == 200) {
-//         final Map<String, dynamic> userData = json.decode(response.body);
-//         User user = User.fromJson(userData);
-//         return user;
-//       } else {
-//         debugPrint('Failed to load logged in user: ${response.statusCode}');
-//         return user;
-//       }
-//     } catch (e) {
-//       debugPrint('Error fetching data: $e');
-//       return user;
-//     }
-//   }
-
-//     Future<void> CreateServiceProvider(String description, double hourlyPrice, double totalExperience, bool haveShop, User user, Services services, Attachment attachment) async {
-//     setState(() {
-//       _isLoading = true;
-//     });
-
-//     try {
-//       final response = await http.post(
-//         Uri.parse(createServiceProviderUrl),
-//         headers: {
-//           'Content-Type': 'application/json',
-//           'Authorization': 'Bearer $token',
-//         },
-//         body: json.encode({
-//           'description': description,
-//           'hourlyPrice': hourlyPrice,
-//           'totalExperience': totalExperience,
-//           'haveShop': haveShop,
-//           'user': {'id': user.id},
-//           'services': {'id': services.id},
-//           'attachment': {'cnicUrl': attachment.cnicUrl}
-//         }),
-//       );
-
-//       if (response.statusCode == 200) {
-//         Navigator.of(context).pushNamedAndRemoveUntil(
-//           homeRoute,
-//           (route) => false,
-//         );
-//         debugPrint('Service Provider creation request successful');
-//       } else {
-//         final Map<String, dynamic> errorData = json.decode(response.body);
-
-//         if (errorData.containsKey('description')) {
-//           final String descriptionError = errorData['description'].toString();
-//           CustomToast.showAlert(context, descriptionError);
-//         } else if (errorData.containsKey('hourlyPrice')) {
-//           final String hourlyPriceError = errorData['hourlyPrice'].toString();
-//           CustomToast.showAlert(context, hourlyPriceError);
-//         } else if (errorData.containsKey('totalExperience')) {
-//           final String totalExperienceError = errorData['totalExperience'].toString();
-//           CustomToast.showAlert(context, totalExperienceError);
-//         } else if (errorData.containsKey('haveShop')) {
-//           final String haveShopError = errorData['haveShop'].toString();
-//           CustomToast.showAlert(context, haveShopError);
-//         } else if (errorData.containsKey('user')) {
-//           final String userError = errorData['user'].toString();
-//           CustomToast.showAlert(context, userError);
-//         } else if (errorData.containsKey('services')) {
-//           final String servicesError = errorData['services'].toString();
-//           CustomToast.showAlert(context, servicesError);
-//         } else if (errorData.containsKey('attachment')) {
-//           final String attachmentError = errorData['attachment'].toString();
-//           CustomToast.showAlert(context, attachmentError);
-//         }
-//          else {
-//           // Display a generic error message for other errors
-//           final String errorMessage = errorData['error'].toString();
-//           CustomToast.showAlert(context, errorMessage);
-//         }
-
-//         debugPrint('ServiceProvider Creation failed: ${response.statusCode}');
-//         debugPrint('Response Body: ${response.body}');
-//       }
-//     } catch (error) {
-//       debugPrint('Error: $error');
-//     } finally {
-//       setState(() {
-//         _isLoading = false; // Set loading to false when login is complete
-//       });
-//     }
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: Container(
-//         decoration: const BoxDecoration(
-//           image: DecorationImage(
-//             image: AssetImage('lib/assets/images/design.png'),
-//             fit: BoxFit.fill,
-//           ),
-//         ),
-//         child: ListView(
-//           padding: const EdgeInsets.all(16.0),
-//           children: [
-//             GestureDetector(
-//               onTap: () {
-//                 Navigator.push(
-//                   context,
-//                   MaterialPageRoute(
-//                     builder: (context) =>
-//                         FullScreenImage(user.profilePictureUrl ?? ''),
-//                   ),
-//                 );
-//               },
-//               child: Hero(
-//                 tag: 'profile_image',
-//                 child: Center(
-//                   child: CircleAvatar(
-//                     radius: 60.0,
-//                     backgroundImage: NetworkImage(user.profilePictureUrl ?? ''),
-//                   ),
-//                 ),
-//               ),
-//             ),
-//             const SizedBox(height: 16.0),
-//             buildProfileItem('Name', user.name),
-//             buildProfileItem('Email', user.email),
-//             buildProfileItem('First Name', user.firstName ?? ''),
-//             buildProfileItem('Last Name', user.lastName ?? ''),
-//             buildProfileItem('Phone', user.phone),
-//             buildLocationInfo(user.location ??
-//                 Location(
-//                   id: 0,
-//                   name: '',
-//                   address: '',
-//                   city: '',
-//                   state: '',
-//                   postalCode: 0,
-//                   country: '',
-//                   latitude: 0.0,
-//                   longitude: 0.0,
-//                   status: false,
-//                 )),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:homesahulat_fyp/models/service_provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:homesahulat_fyp/constants/api_end_points.dart';
@@ -247,6 +26,7 @@ class BecomeServiceProviderView extends StatefulWidget {
 class _BecomeServiceProviderViewState extends State<BecomeServiceProviderView> {
   List<String> servicesList = ['Plumber', 'Electrician', 'Carpenter'];
   late User user;
+  late ServiceProvider serviceProvider;
   late Services service;
   late String token;
   bool _isLoading = false;
@@ -266,6 +46,15 @@ class _BecomeServiceProviderViewState extends State<BecomeServiceProviderView> {
     _isLoading = false;
     user = User(name: '', password: '', phone: '', email: '');
     service = Services(name: '');
+    serviceProvider = ServiceProvider(
+        id: 0,
+        cnicNo: '',
+        description: '',
+        hourlyPrice: 0,
+        totalExperience: 0,
+        haveShop: false,
+        user: user,
+        services: service);
     token = Provider.of<TokenProvider>(context, listen: false).token;
     loadData();
   }
@@ -305,6 +94,33 @@ class _BecomeServiceProviderViewState extends State<BecomeServiceProviderView> {
     } catch (e) {
       debugPrint('Error fetching data: $e');
       return user;
+    }
+  }
+
+  Future<ServiceProvider> getServiceProviderByUserId(int id) async {
+    String apiUrl = getServiceProviderByUserIdUrl(id);
+    final Uri uri = Uri.parse(apiUrl);
+
+    try {
+      final response = await http.get(
+        uri,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
+        ServiceProvider serviceProvider = ServiceProvider.fromJson(data);
+        return serviceProvider;
+      } else {
+        debugPrint('Failed to load serviceProvider: ${response.statusCode}');
+        return serviceProvider;
+      }
+    } catch (e) {
+      debugPrint('Error fetching data: $e');
+      return serviceProvider;
     }
   }
 
@@ -364,13 +180,8 @@ class _BecomeServiceProviderViewState extends State<BecomeServiceProviderView> {
           'services': {'id': services.id},
         }),
       );
-      debugPrint('Response Body: ${response.body}');
 
       if (response.statusCode == 200) {
-        Navigator.of(context).pushNamedAndRemoveUntil(
-          homeRoute,
-          (route) => false,
-        );
         debugPrint('Service Provider creation request successful');
       } else {
         final Map<String, dynamic> errorData = json.decode(response.body);
@@ -403,13 +214,11 @@ class _BecomeServiceProviderViewState extends State<BecomeServiceProviderView> {
         } else if (errorData.containsKey('ServiceProvider already exists')) {
           final String error = errorData['error'].toString();
           CustomToast.showAlert(context, error);
-        }
-         else {
+        } else {
           // Display a generic error message for other errors
           final String errorMessage = errorData['error'].toString();
           CustomToast.showAlert(context, errorMessage);
         }
-
         debugPrint('ServiceProvider Creation failed: ${response.statusCode}');
         debugPrint('Response Body: ${response.body}');
       }
@@ -510,44 +319,6 @@ class _BecomeServiceProviderViewState extends State<BecomeServiceProviderView> {
                           ],
                         ),
 
-                        // Image uploader
-                        ElevatedButton(
-                          onPressed: () async {
-                            final XFile? pickedFile = await ImagePicker()
-                                .pickImage(source: ImageSource.gallery);
-
-                            if (pickedFile != null) {
-                              // Do something with the picked image file
-                              debugPrint('Image Path: ${pickedFile.path}');
-                              setState(() {
-                                imageName = pickedFile.name;
-                              });
-                            }
-                          },
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.image),
-                              SizedBox(width: 8.0),
-                              Text('Upload Cnic Picture'),
-                            ],
-                          ),
-                        ),
-
-                        // Display the picked image's name
-                        if (imageName != null)
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8.0),
-                            child: Row(
-                              children: [
-                                const Icon(Icons.check_circle,
-                                    color: Colors.green),
-                                const SizedBox(width: 8.0),
-                                Text('$imageName'),
-                              ],
-                            ),
-                          ),
-
                         // Submit button
                         ElevatedButton(
                           onPressed: () async {
@@ -556,25 +327,17 @@ class _BecomeServiceProviderViewState extends State<BecomeServiceProviderView> {
                               Services service =
                                   await getServiceByName(selectedService!);
 
-                              // Check if the service is not null before proceeding
-                              if (service != null) {
-                                // Call the function to create a service provider
-                                await createServiceProvider(
-                                  descriptionController.text,
-                                  cnicController.text,
-                                  double.parse(hourlyPriceController.text),
-                                  double.parse(totalExperienceController.text),
-                                  localHaveShop,
-                                  user,
-                                  service,
-                                );
-
-                                // Close the bottom sheet
-                                // Navigator.pop(context);
-                              } else {
-                                // Handle the case when the service is null
-                                debugPrint('Service not found');
-                              }
+                              // Call the function to create a service provider
+                              await createServiceProvider(
+                                descriptionController.text,
+                                cnicController.text,
+                                double.parse(hourlyPriceController.text),
+                                double.parse(totalExperienceController.text),
+                                localHaveShop,
+                                user,
+                                service,
+                              );
+                              _showImageUploadDialog();
                             } catch (error) {
                               // Handle errors during API calls
                               debugPrint('Error: $error');
@@ -670,6 +433,112 @@ class _BecomeServiceProviderViewState extends State<BecomeServiceProviderView> {
           ],
         ),
       ),
+    );
+  }
+
+  void _showImageUploadDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        bool isUploading = false;
+        XFile? pickedImage;
+
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: const Text('Upload Cnic Image'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ElevatedButton(
+                    onPressed: () async {
+                      final XFile? pickedFile = await ImagePicker()
+                          .pickImage(source: ImageSource.gallery);
+
+                      if (pickedFile != null) {
+                        debugPrint('Image Path: ${pickedFile.path}');
+                        setState(() {
+                          pickedImage = pickedFile;
+                          imageName = pickedFile.name;
+                        });
+                      }
+                    },
+                    child: const Text('Pick Cnic'),
+                  ),
+                  // Display the picked image's name
+                  if (imageName != null)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.check_circle, color: Colors.green),
+                          const SizedBox(width: 8.0),
+                          Text('$imageName'),
+                        ],
+                      ),
+                    ),
+                  const SizedBox(height: 16.0),
+                  ElevatedButton(
+                    onPressed: pickedImage == null
+                        ? null // Disable the button if no image is picked
+                        : () async {
+                            try {
+                              setState(() {
+                                isUploading = true;
+                              });
+
+                              // Assuming getServiceProviderByUserId returns a ServiceProvider
+                              serviceProvider =
+                                  await getServiceProviderByUserId(user.id!);
+
+                              // Create a multipart request
+                              var request = http.MultipartRequest(
+                                'POST',
+                                Uri.parse(
+                                    uploadCnicImageUrl(serviceProvider.id)),
+                              );
+
+                              // Add the image file to the request
+                              request.files.add(
+                                await http.MultipartFile.fromPath(
+                                  'file',
+                                  pickedImage!.path,
+                                ),
+                              );
+
+                              // Send the request
+                              var response = await request.send();
+
+                              // Check the response status
+                              if (response.statusCode == 200) {
+                                debugPrint('Image uploaded successfully');
+                                // Handle successful upload, if needed
+                                CustomToast.showAlert(
+                                    context, "ServiceProvider Request Created.");
+                              } else {
+                                debugPrint(
+                                    'Failed to upload image. Status code: ${response.statusCode}');
+                                CustomToast.showAlert(
+                                    context, "Failed to upload image.");
+                              }
+
+                              setState(() {
+                                isUploading = false;
+                              });
+                            } catch (error) {
+                              debugPrint('Error uploading image: $error');
+                            }
+                          },
+                    child: isUploading
+                        ? const CircularProgressIndicator()
+                        : const Text('Upload'),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }

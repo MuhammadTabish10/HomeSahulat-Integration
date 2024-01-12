@@ -6,6 +6,7 @@ import 'package:homesahulat_fyp/constants/api_end_points.dart';
 import 'package:homesahulat_fyp/models/special_booking.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class AppointmentScreen extends StatefulWidget {
   const AppointmentScreen({Key? key}) : super(key: key);
@@ -125,14 +126,22 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (_isLoading)
-                        CircularProgressIndicator(), // Display loader when isLoading is true
-                      _buildSection('Confirmed Appointments',
-                          getBookingsByStatus('Confirmed')),
-                      _buildSection('Pending Appointments',
-                          getBookingsByStatus('Pending')),
-                      _buildSection('Rejected Appointments',
-                          getBookingsByStatus('Rejected')),
+                      if (_isLoading) const CircularProgressIndicator(),
+                      const SizedBox(height: 16), // Add spacing after loader
+                      _buildSection(
+                        'Confirmed Appointments',
+                        getBookingsByStatus('Confirmed'),
+                      ),
+                      const SizedBox(height: 16),
+                      _buildSection(
+                        'Pending Appointments',
+                        getBookingsByStatus('Pending'),
+                      ),
+                      const SizedBox(height: 16),
+                      _buildSection(
+                        'Rejected Appointments',
+                        getBookingsByStatus('Rejected'),
+                      ),
                     ],
                   ),
                 ),
@@ -166,22 +175,43 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                     .map((booking) => _buildAppointmentCard(booking))
                     .toList(),
               ),
-        const SizedBox(height: 16),
       ],
     );
   }
 
   Widget _buildAppointmentCard(SpecialBooking booking) {
     return Card(
-      elevation: 3,
+      elevation: 5,
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: ListTile(
-        title: Column(
+        contentPadding: const EdgeInsets.all(16),
+        title: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text("Hello"),
-            Text('Date: ${_formatDateTime(booking.appointmentDate!)}'),
-            Text('Time: ${booking.appointmentTime!}'),
+            const CircleAvatar(
+              radius: 34.0,
+              backgroundImage: NetworkImage('https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w600/2023/10/free-images.jpg'),
+            ),
+            const SizedBox(width: 16), // Add spacing between CircleAvatar and text
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Date: ${_formatDateTime(booking.appointmentDate!)}',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    'Time: ${_formatTime(booking.appointmentTime!)}',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
         trailing: _buildStatusChip(booking.bookingStatus),
@@ -209,12 +239,22 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
       backgroundColor: chipColor,
       label: Text(
         status!,
-        style: const TextStyle(color: Colors.white),
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 15,
+        ),
       ),
     );
   }
 
   String _formatDateTime(DateTime dateTime) {
     return '${dateTime.day}/${dateTime.month}/${dateTime.year}';
+  }
+
+  String _formatTime(TimeOfDay time) {
+    final parsedTime = time;
+    final formatter = DateFormat.jm(); // Adjust the time format as needed
+    return formatter
+        .format(DateTime(2023, 1, 1, parsedTime.hour, parsedTime.minute));
   }
 }

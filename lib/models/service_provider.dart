@@ -17,7 +17,7 @@ class ServiceProvider {
   double totalExperience;
   double? totalRating;
   bool? atWork;
-  String? cnicUrl;
+  // String? cnicUrl;
   bool haveShop;
   bool? status;
   User user;
@@ -34,7 +34,7 @@ class ServiceProvider {
     this.atWork,
     required this.haveShop,
     this.status,
-    this.cnicUrl,
+    // this.cnicUrl,
     required this.user,
     required this.services,
   });
@@ -50,7 +50,7 @@ class ServiceProvider {
       totalRating: json['totalRating'].toDouble(),
       atWork: json['atWork'] as bool,
       haveShop: json['haveShop'] as bool,
-      cnicUrl: json['cnicUrl'] as String,
+      // cnicUrl: json['cnicUrl'] as String,
       status: json['status'] as bool,
       user: User.fromJson(json['user']),
       services: Services.fromJson(json['services']),
@@ -69,7 +69,7 @@ class ServiceProvider {
       'totalRating': totalRating,
       'atWork': atWork,
       'haveShop': haveShop,
-      'cnicUrl': cnicUrl,
+      // 'cnicUrl': cnicUrl,
       'status': status,
       'user': user.toJson(),
       'services': services.toJson(),

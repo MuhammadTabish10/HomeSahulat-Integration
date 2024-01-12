@@ -8,6 +8,7 @@ import 'package:homesahulat_fyp/models/user.dart';
 import 'package:homesahulat_fyp/utilities/show_logout_dialog.dart';
 import 'package:homesahulat_fyp/views/appointment_view.dart';
 import 'package:homesahulat_fyp/views/become_service_provider_view.dart';
+import 'package:homesahulat_fyp/views/service_provider_home.dart';
 import 'package:homesahulat_fyp/views/user_profile_view.dart';
 import 'package:homesahulat_fyp/widget/build_button.dart';
 import 'dart:convert';
@@ -27,7 +28,8 @@ class _HomeViewState extends State<HomeView> {
   late User user = User(name: '', password: '', phone: '', email: '');
   late String token;
   bool isMounted = false;
-  late bool _isLoading;
+  late bool isVerified = false;
+  late bool isLoading;
   late List<Widget> _widgetOptions;
 
   final List<String> _imageUrls = [
@@ -41,7 +43,7 @@ class _HomeViewState extends State<HomeView> {
     super.initState();
     token = Provider.of<TokenProvider>(context, listen: false).token;
     isMounted = true;
-    _isLoading = false; // Initialize isLoading to false
+    isLoading = false; // Initialize isLoading to false
   }
 
   @override
@@ -60,32 +62,39 @@ class _HomeViewState extends State<HomeView> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    // Move the initialization of _widgetOptions here
-    _widgetOptions = <Widget>[
-      buildHomeScreen(),
-      const AppointmentScreen(),
-      const UserProfileView(), 
-      const BecomeServiceProviderView(),
-      const Text("FAQ's"),
-      const Text('Settings'),
-      const Text('Logout'),
-    ];
-
     // Load data or perform other tasks if needed
-    loadData();
+    loadData().then((_) {
+      // Move the initialization of _widgetOptions here
+      _widgetOptions = <Widget>[
+        buildHomeScreen(),
+        const AppointmentScreen(),
+        const UserProfileView(),
+        isVerified
+            ? const ServiceProviderHomeScreen()
+            : const BecomeServiceProviderView(),
+        const Text('Settings'),
+        const Text('Logout'),
+      ];
+
+      // Force a re-render to update the UI with the new _widgetOptions
+      setState(() {});
+    });
   }
 
   Future<void> loadData() async {
     try {
       // Set loading to true when API call starts
       setState(() {
-        _isLoading = true;
+        isLoading = true;
       });
 
       final loggedInUser = await getUser(token);
+      final isVerifiedProvider =
+          await isServiceProviderVerified(loggedInUser.id);
       if (isMounted) {
         setState(() {
           user = loggedInUser;
+          isVerified = isVerifiedProvider;
         });
       }
     } catch (e) {
@@ -94,9 +103,36 @@ class _HomeViewState extends State<HomeView> {
       // Set loading to false when API call completes (whether successful or not)
       if (isMounted) {
         setState(() {
-          _isLoading = false;
+          isLoading = false;
         });
       }
+    }
+  }
+
+  Future<bool> isServiceProviderVerified(int? id) async {
+    String apiUrl = verifyServiceProviderUrl(id!);
+    final Uri uri = Uri.parse(apiUrl);
+
+    try {
+      final response = await http.get(
+        uri,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final bool isVerified = json.decode(response.body);
+        return isVerified;
+      } else {
+        debugPrint(
+            'Failed to to check serviceProvider verification: ${response.statusCode}');
+        return false;
+      }
+    } catch (e) {
+      debugPrint('Error fetching data: $e');
+      return false;
     }
   }
 
@@ -129,20 +165,28 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _buildAppBar(),
-      drawer: _buildDrawer(),
-      body: Container(
-        decoration: const BoxDecoration(
-          // Add a background image to the container
-          image: DecorationImage(
-            image: AssetImage('lib/assets/images/design.png'),
-            fit: BoxFit.cover,
-          ),
+    if (isLoading) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
         ),
-        child: _widgetOptions[_selectedIndex],
-      ),
-    );
+      );
+    } else {
+      return Scaffold(
+        appBar: _buildAppBar(),
+        drawer: _buildDrawer(),
+        body: Container(
+          decoration: const BoxDecoration(
+            // Add a background image to the container
+            image: DecorationImage(
+              image: AssetImage('lib/assets/images/design.png'),
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: _widgetOptions[_selectedIndex],
+        ),
+      );
+    }
   }
 
   AppBar _buildAppBar() {
@@ -219,7 +263,7 @@ class _HomeViewState extends State<HomeView> {
           ),
           const SizedBox(height: 16),
           // Loader widget based on _isLoading
-          _isLoading
+          isLoading
               ? const Center(
                   child: CircularProgressIndicator(),
                 )
@@ -248,39 +292,57 @@ class _HomeViewState extends State<HomeView> {
 
   Drawer _buildDrawer() {
     return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: <Widget>[
-          UserAccountsDrawerHeader(
-            accountName: Text(user.name),
-            accountEmail: Text(user.email ?? ''),
-            currentAccountPicture: CircleAvatar(
-              backgroundImage: NetworkImage(user.profilePictureUrl ?? ''),
-            ),
-            decoration: const BoxDecoration(
-              color: Colors.blue,
-            ),
-          ),
-          _buildDrawerItem(0, Icons.home, 'Home'),
-          _buildDrawerItem(1, Icons.book, 'Appointments'),
-          _buildDrawerItem(2, Icons.person, 'Profile'),
-          _buildDrawerItem(3, Icons.person_add, 'Become Service Provider'),
-          _buildDrawerItem(4, Icons.adf_scanner_rounded, "FAQ's"),
-          _buildDrawerItem(5, Icons.settings, 'Settings'),
-          ListTile(
-            leading: const Icon(Icons.logout),
-            title: const Text('Logout'),
-            selected: _selectedIndex == 6,
-            onTap: () async {
-              _onItemTapped(6);
-              final shouldLogout = await showLogOutDialog(context);
-              if (shouldLogout) {
-                Navigator.of(context)
-                    .pushNamedAndRemoveUntil(loginRoute, (_) => false);
-              }
-            },
-          ),
-        ],
+      child: FutureBuilder<bool>(
+        future: isServiceProviderVerified(
+            user.id), // Assuming user.id is the service provider ID
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else {
+            bool isVerified = snapshot.data ?? false;
+
+            return ListView(
+              padding: EdgeInsets.zero,
+              children: <Widget>[
+                UserAccountsDrawerHeader(
+                  accountName: Text(user.name),
+                  accountEmail: Text(user.email),
+                  currentAccountPicture: CircleAvatar(
+                    backgroundImage: NetworkImage(user.profilePictureUrl ?? ''),
+                  ),
+                  decoration: const BoxDecoration(
+                    color: Colors.blue,
+                  ),
+                ),
+                _buildDrawerItem(0, Icons.home, 'Home'),
+                _buildDrawerItem(1, Icons.book, 'Appointments'),
+                _buildDrawerItem(2, Icons.person, 'Profile'),
+                isVerified
+                    ? _buildDrawerItem(3, Icons.home, 'Service Provider Home')
+                    : _buildDrawerItem(
+                        3, Icons.person_add, 'Become Service Provider'),
+                _buildDrawerItem(4, Icons.settings, 'Settings'),
+                ListTile(
+                  leading: const Icon(Icons.logout),
+                  title: const Text('Logout'),
+                  selected: _selectedIndex == 5,
+                  onTap: () async {
+                    _onItemTapped(5);
+                    final shouldLogout = await showLogOutDialog(context);
+                    if (shouldLogout) {
+                      Navigator.of(context)
+                          .pushNamedAndRemoveUntil(loginRoute, (_) => false);
+                    }
+                  },
+                ),
+              ],
+            );
+          }
+        },
       ),
     );
   }

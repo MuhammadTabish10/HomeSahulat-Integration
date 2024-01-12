@@ -414,7 +414,7 @@ class _BookingViewState extends State<BookingView> {
         });
       }
 
-      descriptionController.text = '';
+      // descriptionController.text = ;
       addressController.text = user.location?.address ?? '';
       cityController.text = user.location?.city ?? '';
     } catch (e) {
@@ -573,31 +573,31 @@ class _BookingViewState extends State<BookingView> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  'Please further describe your problem',
+                  'Please enter details',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 10),
-                TextFormField(
-                  controller: descriptionController,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please enter a description';
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    labelText: 'Description',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    filled: true,
-                    fillColor: Colors.grey[200],
-                  ),
-                ),
-                const SizedBox(height: 10),
+                // TextFormField(
+                //   controller: descriptionController,
+                //   validator: (value) {
+                //     if (value!.isEmpty) {
+                //       return 'Please enter a description';
+                //     }
+                //     return null;
+                //   },
+                //   decoration: InputDecoration(
+                //     labelText: 'Description',
+                //     border: OutlineInputBorder(
+                //       borderRadius: BorderRadius.circular(10.0),
+                //     ),
+                //     filled: true,
+                //     fillColor: Colors.grey[200],
+                //   ),
+                // ),
+                // const SizedBox(height: 10),
                 TextFormField(
                   controller: addressController,
                   validator: (value) {

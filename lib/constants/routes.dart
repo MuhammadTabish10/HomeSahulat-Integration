@@ -9,6 +9,7 @@ import 'package:homesahulat_fyp/views/login_view.dart';
 import 'package:homesahulat_fyp/views/otp_verification_view.dart';
 import 'package:homesahulat_fyp/views/register_view.dart';
 import 'package:homesahulat_fyp/views/home_view.dart';
+import 'package:homesahulat_fyp/views/service_provider_home.dart';
 import 'package:homesahulat_fyp/views/service_provider_profile.dart';
 import 'package:homesahulat_fyp/views/service_provider_view.dart';
 import 'package:homesahulat_fyp/views/user_profile_view.dart';
@@ -27,6 +28,7 @@ const String userProfileRoute = '/userProfile';
 const String forgotPasswordRoute = '/forgotPassword';
 const String appointmentRoute = '/appointment';
 const String becomeServiceProviderRoute = '/becomeServiceProvider';
+const String serviceProviderHomeRoute = '/serviceProviderHome';
 
 final Map<String, WidgetBuilder> routes = {
   loginRoute: (context) => const LoginView(),
@@ -42,4 +44,5 @@ final Map<String, WidgetBuilder> routes = {
   forgotPasswordRoute: (context) => ForgotPasswordScreen(),
   appointmentRoute: (context) => const AppointmentScreen(),
   becomeServiceProviderRoute: (context) => const BecomeServiceProviderView(),
+  serviceProviderHomeRoute: (context) => ServiceProviderHomeScreen()
 };

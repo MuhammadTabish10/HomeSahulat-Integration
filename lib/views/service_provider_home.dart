@@ -3,9 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:homesahulat_fyp/config/token_provider.dart';
 import 'package:homesahulat_fyp/constants/api_end_points.dart';
-import 'package:homesahulat_fyp/constants/routes.dart';
-import 'package:homesahulat_fyp/models/review.dart';
-import 'package:homesahulat_fyp/widget/build_review_item.dart';
 import 'package:homesahulat_fyp/models/service_provider.dart';
 import 'package:homesahulat_fyp/models/special_booking.dart';
 import 'package:provider/provider.dart';
@@ -21,6 +18,7 @@ class ServiceProviderHomeScreen extends StatefulWidget {
 
 class _ServiceProviderHomeScreenState extends State<ServiceProviderHomeScreen> {
   late ServiceProvider serviceProvider;
+  late List<SpecialBooking> bookingList = [];
   late bool _isLoading;
   late String token;
 
@@ -37,10 +35,12 @@ class _ServiceProviderHomeScreenState extends State<ServiceProviderHomeScreen> {
       setState(() {
         _isLoading = true;
       });
-
-      final bookings = await getBookingByServiceProvider(serviceProvider.id);
+      final loggedInServiceProvider = await getServiceProvider();
+      final bookings = await getBookingByServiceProvider(
+          loggedInServiceProvider.id, "Pending");
       setState(() {
-        // incomingBookings = bookings;
+        bookingList = bookings;
+        serviceProvider = loggedInServiceProvider;
       });
     } catch (e) {
       debugPrint('Error fetching data: $e');
@@ -48,6 +48,36 @@ class _ServiceProviderHomeScreenState extends State<ServiceProviderHomeScreen> {
       setState(() {
         _isLoading = false;
       });
+    }
+  }
+
+  Future<ServiceProvider> getServiceProvider() async {
+    String apiUrl = getLoggedInServiceProviderUrl;
+    final Uri uri = Uri.parse(apiUrl);
+
+    try {
+      final response = await http.get(
+        uri,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> serviceProviderData =
+            json.decode(response.body);
+        ServiceProvider serviceProvider =
+            ServiceProvider.fromJson(serviceProviderData);
+        return serviceProvider;
+      } else {
+        debugPrint(
+            'Failed to load logged in serviceProvider: ${response.statusCode}');
+        return serviceProvider;
+      }
+    } catch (e) {
+      debugPrint('Error fetching data: $e');
+      return serviceProvider;
     }
   }
 
@@ -83,12 +113,13 @@ class _ServiceProviderHomeScreenState extends State<ServiceProviderHomeScreen> {
     }
   }
 
-  Future<List<SpecialBooking>> getBookingByServiceProvider(int id) async {
+  Future<List<SpecialBooking>> getBookingByServiceProvider(
+      int id, String status) async {
     setState(() {
       _isLoading = true;
     });
 
-    String apiUrl = getAllBookingsByServiceProviderIdUrl(id);
+    String apiUrl = getAllBookingsByServiceProviderIdUrl(id, status);
     final Uri uri = Uri.parse(apiUrl);
 
     try {
@@ -128,59 +159,69 @@ class _ServiceProviderHomeScreenState extends State<ServiceProviderHomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
+            const Text(
               'Incoming Booking Requests',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 8),
-            Expanded(
-              child: ListView.builder(
-                itemCount: 5, // Change this to the actual number of bookings
-                itemBuilder: (context, index) {
-                  return Card(
-                    margin: EdgeInsets.symmetric(vertical: 8),
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        radius: 30,
-                        backgroundImage: NetworkImage(
-                            'https://placekitten.com/100/100'), // Replace with actual user profile picture URL
-                      ),
-                      title: Text('John Doe - 2023-01-01'),
-                      subtitle: Text('10:00 AM'),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            icon: Icon(
-                              Icons.check,
-                              color: Colors.green, // Set the color to green
-                            ),
-                            onPressed: () {
-                              // Implement accept booking logic
-                              print('Booking accepted');
-                            },
-                          ),
-                          IconButton(
-                            icon: Icon(
-                              Icons.close,
-                              color: Colors.red, // Set the color to red
-                            ),
-                            onPressed: () {
-                              // Implement reject booking logic
-                              print('Booking rejected');
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
+            const SizedBox(height: 8),
+            _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : (bookingList.isEmpty
+                    ? const Center(child: Text('No incoming bookings.'))
+                    : Expanded(
+                        child: ListView.builder(
+                          itemCount: bookingList.length,
+                          itemBuilder: (context, index) {
+                            SpecialBooking booking = bookingList[index];
+                            return Card(
+                              margin: const EdgeInsets.symmetric(vertical: 8),
+                              child: ListTile(
+                                leading: CircleAvatar(
+                                  radius: 30,
+                                  backgroundImage: NetworkImage(
+                                      booking.user.profilePictureUrl ?? ''),
+                                ),
+                                title: Text(
+                                    '${booking.user.name} - ${booking.appointmentDate?.toString().split(' ')[0]}'),
+                                subtitle: Text(
+                                    '${booking.appointmentTime?.format(context)}'),
+                                trailing: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      icon: const Icon(
+                                        Icons.check,
+                                        color: Colors.green,
+                                      ),
+                                      onPressed: () async {
+                                        // Implement accept booking logic
+                                        updateBookingStatus(
+                                            booking.id, 'Confirmed');
+                                        await loadData();
+                                      },
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(
+                                        Icons.close,
+                                        color: Colors.red,
+                                      ),
+                                      onPressed: () async {
+                                        // Implement reject booking logic
+                                        updateBookingStatus(
+                                            booking.id, 'Rejected');
+                                        await loadData();
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      )),
           ],
         ),
       ),
     );
   }
 }
-

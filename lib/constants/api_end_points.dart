@@ -1,21 +1,22 @@
-const String baseURL = 'http://192.168.0.105:8080/api/';
+const String baseURL = 'http://192.168.0.103:8080/api/';
 // const String baseURL = 'http://localhost:8080/api/';
 // const String baseURL = 'https://api.homesahulat.stepwaysoftwares.com/api/';
 
 String signUpUrl = '${baseURL}signup';
 String loginUrl = '${baseURL}login';
 String getLoggedInUserUrl = '${baseURL}user/logged-in';
+String getLoggedInServiceProviderUrl = '${baseURL}service-provider/logged-in';
 String bookUrl = '${baseURL}booking';
 String createServiceProviderUrl = '${baseURL}service-provider';
 String addLocationUrl = '${baseURL}location';
 String getBookingsByLoggedInUserUrl = '${baseURL}booking/by-logged-in-user';
 
-String updateBookingStatusUrl(int id, String status){
-    return '${baseURL}booking/$id/status/$status';
+String updateBookingStatusUrl(int id, String status) {
+  return '${baseURL}booking/$id/status/$status';
 }
 
-String getAllBookingsByServiceProviderIdUrl(int id) {
-  return '${baseURL}booking/serviceProvider/$id';
+String getAllBookingsByServiceProviderIdUrl(int id, String status) {
+  return '${baseURL}booking/serviceProvider/$id/$status';
 }
 
 String uploadCnicImageUrl(int id) {

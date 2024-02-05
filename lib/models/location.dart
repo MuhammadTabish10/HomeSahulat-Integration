@@ -5,8 +5,8 @@ String locationToJson(Location data) => json.encode(data.toJson());
 
 class Location {
   final int? id;
-  final String address;
-  final String city;
+  String address;
+  String city;
   final String state;
   final int postalCode;
   final String country;
